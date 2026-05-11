@@ -78,13 +78,14 @@ export function DesignView({ globalPeriodRange, syncTick, search }) {
   const types        = ['All', ...uniqueSorted(designRows.map((d) => d.type))];
   const stakeholders = ['All', ...uniqueSorted(designRows.map((d) => d.stakeholder))];
 
-  const totalTasks      = filtered.length;
+  // const totalTasks      = filtered.length;
   const usabilityCount  = filtered.filter((d) => d.type === 'Usability').length;
   const expertCount     = filtered.filter((d) => d.type === 'Expert Analysis').length;
   const totalStudies    = usabilityCount + expertCount;
   const surveyCount     = filtered.filter((d) => d.type === 'Survey').length;
   const sentimentCount  = filtered.filter((d) => d.type === 'Sentiment Analysis').length;
   const pulseCount      = filtered.filter((d) => d.type === 'App Pulse Reporting').length;
+  const totalTasks = totalStudies + surveyCount + sentimentCount + pulseCount;
   const completedCount  = filtered.filter((d) => d.status === 'Completed').length;
   const usabilityParticipants = filtered.filter((d) => d.type === 'Usability').reduce((s, d) => s + (d.count_users || 0), 0);
   const surveyUsers = filtered.filter((d) => d.type === 'Survey').reduce((s, d) => s + (d.count_users || 0), 0);
