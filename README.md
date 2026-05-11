@@ -145,3 +145,5 @@ scripts/google-auth.js  # Re-runs the OAuth flow to mint a fresh refresh token
 ## Support
 
 Source code and configuration are entirely in this repository — there is no external orchestration layer. The Vercel CLI plus the provided `.env` file are enough to redeploy from scratch on any Vercel account.
+
+### Hasan Javaid Malik
