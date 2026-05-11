@@ -1,4 +1,11 @@
 {
+  "redirects": [
+    {
+      "source": "/",
+      "destination": "/new-ui",
+      "permanent": false
+    }
+  ],
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "crons": [
     { "path": "/api/sync", "schedule": "0 6 * * 1" }
