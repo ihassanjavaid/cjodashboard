@@ -1,0 +1,83 @@
+:root {
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body { margin: 0; padding: 0; }
+body { min-height: 100vh; -webkit-text-size-adjust: 100%; }
+
+#root { width: 100%; min-height: 100vh; }
+
+/* ── Responsive helpers used by the dashboard tabs ──────────────────── */
+
+/* 3-column chart grid → 2 cols on tablets → 1 col on phones */
+.cjo-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+@media (max-width: 1024px) { .cjo-grid-3 { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 640px)  { .cjo-grid-3 { grid-template-columns: 1fr; } }
+
+/* 2-column chart grid → 1 col on phones */
+.cjo-grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+@media (max-width: 768px) { .cjo-grid-2 { grid-template-columns: 1fr; } }
+
+/* 2fr / 1fr split (process tab) → 1 col on phones */
+.cjo-grid-2-1 { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; }
+@media (max-width: 900px) { .cjo-grid-2-1 { grid-template-columns: 1fr; } }
+
+/* Standardization tab grid: 3 cols on desktop with inline `gridColumn: span 2`
+   children. On smaller screens we force every child to a full row so wide
+   charts and narrow charts both stay readable. !important overrides the
+   inline span style coming from ChartCard. */
+.cjo-std-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+@media (max-width: 1024px) {
+  .cjo-std-grid { grid-template-columns: 1fr; }
+  .cjo-std-grid > * { grid-column: 1 / -1 !important; }
+}
+
+/* KPI row — wrap nicely on phones */
+.cjo-kpi-row {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+.cjo-kpi-row > * { flex: 1 1 180px; }
+
+/* Make any wide table scroll horizontally on small screens without
+   breaking the rest of the layout. */
+.cjo-scroll-x { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+/* Header bar: when there's no room for filter + sync row to sit alongside
+   the title row, allow them to wrap onto their own line. */
+.cjo-header-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+@media (max-width: 720px) {
+  .cjo-header-row { flex-wrap: wrap; align-items: flex-start; }
+}
+
+/* Tab bar wraps if too wide */
+.cjo-tabs { display: flex; flex-wrap: wrap; }
+
+/* Page content padding — tighter on phones */
+.cjo-page { max-width: 1400px; margin: 0 auto; padding: 28px 32px; }
+@media (max-width: 768px) { .cjo-page { padding: 20px 16px; } }
+
+.cjo-header-inner { max-width: 1400px; margin: 0 auto; padding: 0 32px; }
+@media (max-width: 768px) { .cjo-header-inner { padding: 0 16px; } }
+
+/* Period filter wraps on small screens */
+.cjo-period {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+/* Filter pill row inside FilterRow — already wraps, but make sure each
+   Sel control doesn't get squeezed beyond its minWidth on mobile. */
+@media (max-width: 480px) {
+  .cjo-page select { min-width: 0 !important; width: 100%; }
+}
