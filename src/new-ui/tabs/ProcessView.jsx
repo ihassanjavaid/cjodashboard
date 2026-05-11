@@ -172,8 +172,8 @@ export function ProcessView({ syncTick, search }) {
         </ChartFrame>
 
         <ChartFrame
-          title="BVS composition"
-          caption="Banking value stream"
+          title="BVS Composition"
+          caption="Biometric Verification System"
           empty={bvsTotal === 0}
         >
           <DonutChart
