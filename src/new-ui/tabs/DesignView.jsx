@@ -160,7 +160,7 @@ export function DesignView({ globalPeriodRange, syncTick, search }) {
       <header className="nu-page__head">
         <div className="nu-page__heading">
           <h1>Design & Usability</h1>
-          <p>Plan, prioritize, and track every research and design task across the portfolio.</p>
+          <p>Transforming research & survey insights into actionable design milestones.</p>
         </div>
       </header>
 
@@ -172,7 +172,7 @@ export function DesignView({ globalPeriodRange, syncTick, search }) {
           <KpiCard
             label="Total tasks"
             value={totalTasks}
-            sub={`${completionPct}% completed this period`}
+            sub="completed in this period"
             filled
           />
         </div>
