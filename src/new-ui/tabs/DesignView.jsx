@@ -170,7 +170,7 @@ export function DesignView({ globalPeriodRange, syncTick, search }) {
       <div className="nu-kpi-row">
         <div className="nu-rise" data-i="0">
           <KpiCard
-            label="Total tasks"
+            label="Total Tasks"
             value={totalTasks}
             sub="completed in this period"
             filled
@@ -178,14 +178,14 @@ export function DesignView({ globalPeriodRange, syncTick, search }) {
         </div>
         <div className="nu-rise" data-i="1">
           <KpiCard
-            label="Total studies"
+            label="Total Studies"
             value={totalStudies}
             sub={`${usabilityCount} usability · ${expertCount} expert`}
           />
         </div>
         <div className="nu-rise" data-i="2">
           <KpiCard
-            label="Surveys"
+            label="Ad-Hoc Surveys"
             value={surveyCount}
             sub={`${fmt(surveyUsers)} respondents`}
           />
