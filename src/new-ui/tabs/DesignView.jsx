@@ -180,7 +180,7 @@ export function DesignView({ globalPeriodRange, syncTick, search }) {
           <KpiCard
             label="Total Studies"
             value={totalStudies}
-            sub={`${usabilityCount} usability · ${expertCount} expert`}
+            sub={`${usabilityCount} Usabilities · ${expertCount} Expert Analysis`}
           />
         </div>
         <div className="nu-rise" data-i="2">
