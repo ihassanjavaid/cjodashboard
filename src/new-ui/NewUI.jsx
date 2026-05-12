@@ -21,7 +21,8 @@ const TABS = [
 
 export default function NewUI() {
   const [activeTab, setActiveTab] = useState('design');
-  const [periodFrom, setPeriodFrom] = useState('All');
+  // const [periodFrom, setPeriodFrom] = useState('All');
+  const [periodFrom, setPeriodFrom] = useState('Jan 26');
   const [periodTo,   setPeriodTo]   = useState('All');
   const [lastSyncedAt, setLastSyncedAt] = useState(null);
   const [syncTick, setSyncTick] = useState(0);
