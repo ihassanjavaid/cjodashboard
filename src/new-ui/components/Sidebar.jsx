@@ -43,26 +43,36 @@ const ICONS = {
 
 const TEAM_TAB_IDS = ['design', 'std', 'process'];
 const OVERVIEW_TAB_IDS = ['strategy'];
+const DISABLED_TAB_IDS = ['strategy']; // temporarily disabled
 
-export function Sidebar({ tabs, activeTab, onChangeTab, lastSyncedAt, onSyncComplete, syncStatus }) {
+export function Sidebar({ tabs, activeTab, onChangeTab, lastSyncedAt, onSyncComplete, syncStatus, onLogout }) {
   const tabById = Object.fromEntries(tabs.map((t) => [t.id, t]));
   const teamTabs     = TEAM_TAB_IDS.map((id) => tabById[id]).filter(Boolean);
   const overviewTabs = OVERVIEW_TAB_IDS.map((id) => tabById[id]).filter(Boolean);
 
-  const renderItem = (t) => (
-    <button
-      key={t.id}
-      type="button"
-      className="nu-nav__item"
-      data-active={t.id === activeTab}
-      onClick={() => onChangeTab(t.id)}
-      aria-current={t.id === activeTab ? 'page' : undefined}
-    >
-      <span className="nu-nav__item-icon">{ICONS[t.id]}</span>
-      <span>{t.label}</span>
-      {t.count != null && <span className="nu-nav__count">{t.count}</span>}
-    </button>
-  );
+  const renderItem = (t) => {
+    const disabled = DISABLED_TAB_IDS.includes(t.id);
+    return (
+      <button
+        key={t.id}
+        type="button"
+        className="nu-nav__item"
+        data-active={t.id === activeTab}
+        data-disabled={disabled}
+        onClick={() => !disabled && onChangeTab(t.id)}
+        aria-current={t.id === activeTab ? 'page' : undefined}
+        aria-disabled={disabled}
+        title={disabled ? 'Coming soon' : undefined}
+      >
+        <span className="nu-nav__item-icon">{ICONS[t.id]}</span>
+        <span>{t.label}</span>
+        {disabled
+          ? <span className="nu-nav__badge">Soon</span>
+          : t.count != null && <span className="nu-nav__count">{t.count}</span>
+        }
+      </button>
+    );
+  };
 
   return (
     <aside className="nu-sidebar">
@@ -88,12 +98,13 @@ export function Sidebar({ tabs, activeTab, onChangeTab, lastSyncedAt, onSyncComp
         )}
 
         <div className="nu-nav__group">
-          <span className="nu-nav__label">General</span>
-          <a className="nu-nav__item" href="/diagnostics">
-            <span className="nu-nav__item-icon">{ICONS.diagnostics}</span>
-            <span>Diagnostics</span>
-          </a>
-        </div>
+  <span className="nu-nav__label">General</span>
+  <span className="nu-nav__item" data-disabled="true" aria-disabled="true" title="Disabled">
+    <span className="nu-nav__item-icon">{ICONS.diagnostics}</span>
+    <span>Diagnostics</span>
+    <span className="nu-nav__badge">Disabled</span>
+  </span>
+</div>
 
         <div style={{ flex: 1 }} />
 
@@ -102,6 +113,31 @@ export function Sidebar({ tabs, activeTab, onChangeTab, lastSyncedAt, onSyncComp
           lastSyncedAt={lastSyncedAt}
           onSyncComplete={onSyncComplete}
         />
+
+        {onLogout && (
+          <button
+            type="button"
+            className="nu-nav__item"
+            onClick={onLogout}
+            style={{
+  marginTop: 8,
+  color: 'var(--nu-ink-3)',
+  borderTop: '1px solid var(--nu-border)',
+  paddingTop: 10,
+  borderRadius: 0,
+  opacity: 0.7,
+}}
+          >
+            <span className="nu-nav__item-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                <polyline points="16 17 21 12 16 7" />
+                <line x1="21" y1="12" x2="9" y2="12" />
+              </svg>
+            </span>
+            <span>Log out</span>
+          </button>
+        )}
       </nav>
     </aside>
   );

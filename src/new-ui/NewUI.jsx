@@ -6,6 +6,7 @@ import './new-ui.css';
 import { Sidebar } from './components/Sidebar.jsx';
 import { TopBar } from './components/TopBar.jsx';
 import { sortPeriods } from './lib/utils.js';
+import { logout } from '../App.jsx';
 
 import { DesignView } from './tabs/DesignView.jsx';
 import { StandardizationView } from './tabs/StandardizationView.jsx';
@@ -14,8 +15,8 @@ import { StrategyView } from './tabs/StrategyView.jsx';
 
 const TABS = [
   { id: 'design',   label: 'Design & Usability' },
-  { id: 'std',      label: 'Standardization' },
-  { id: 'process',  label: 'Process Team' },
+  { id: 'std',      label: 'Product Optimization' },
+  { id: 'process',  label: 'Process Innovation' },
   { id: 'strategy', label: 'Strategic Overview' },
 ];
 
@@ -84,6 +85,7 @@ export default function NewUI() {
           lastSyncedAt={lastSyncedAt}
           onSyncComplete={onSyncComplete}
           syncStatus={overallStatus}
+          onLogout={logout}
         />
 
         <div className="nu-main">
