@@ -146,7 +146,7 @@ export function StandardizationView({ globalPeriodRange, syncTick, search }) {
     <section className="nu-page">
       <header className="nu-page__head">
         <div className="nu-page__heading">
-          <h1>Standardization</h1>
+          <h1>Product Optimization</h1>
           <p>UAT activity, issue resolution, and individual contribution across {sourceLabel}.</p>
         </div>
         <div className="nu-page__actions">
@@ -180,7 +180,7 @@ export function StandardizationView({ globalPeriodRange, syncTick, search }) {
           <KpiCard label="Issues Fixed" value={issuesF} sub={`Fix rate: ${fixRate}%`} />
         </div>
         <div className="nu-rise" data-i="5">
-          <KpiCard label="Test cases" value={totalCases} sub={`${totalPass} passed`} />
+          <KpiCard label="Test Cases" value={totalCases} sub={`${totalPass} passed`} />
         </div>
       </div>
 

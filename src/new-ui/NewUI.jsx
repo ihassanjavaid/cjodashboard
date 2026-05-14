@@ -15,8 +15,8 @@ import { StrategyView } from './tabs/StrategyView.jsx';
 
 const TABS = [
   { id: 'design',   label: 'Design & Usability' },
-  { id: 'std',      label: 'Standardization' },
-  { id: 'process',  label: 'Process Team' },
+  { id: 'std',      label: 'Product Optimization' },
+  { id: 'process',  label: 'Process Innovation' },
   { id: 'strategy', label: 'Strategic Overview' },
 ];
 

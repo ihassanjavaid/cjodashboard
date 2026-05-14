@@ -196,13 +196,13 @@
   position: relative;
   display: flex;
   align-items: center;
-  gap: 12px;
-  min-height: 48px;
-  padding: 12px 18px;
-  border-radius: 13px;
+  gap: 10px;
+  min-height: 38px;
+  padding: 8px 12px;
+  border-radius: 10px;
   color: var(--nu-ink-3);
   font-weight: 500;
-  font-size: 13px;
+  font-size: 12px;
   line-height: 1.2;
   cursor: pointer;
   transition: background 180ms var(--nu-ease), color 180ms var(--nu-ease), transform 140ms var(--nu-ease), box-shadow 180ms var(--nu-ease);
@@ -212,14 +212,34 @@
 
 .nu button.nu-nav__item,
 .nu a.nu-nav__item {
-  padding: 12px 18px;
+  padding: 8px 12px;
 }
 
-.nu-nav__item > span:not(.nu-nav__item-icon):not(.nu-nav__count) {
+.nu-nav__item > span:not(.nu-nav__item-icon):not(.nu-nav__count):not(.nu-nav__badge) {
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+/* Disabled tab */
+.nu-nav__item[data-disabled="true"] {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* "Soon" badge */
+.nu-nav__badge {
+  margin-left: auto;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: oklch(74% 0.010 25 / 0.15);
+  color: var(--nu-ink-3);
+  padding: 2px 6px;
+  border-radius: 5px;
 }
 
 .nu-nav__item-icon {

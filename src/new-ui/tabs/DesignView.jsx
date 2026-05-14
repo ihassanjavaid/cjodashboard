@@ -216,7 +216,7 @@ export function DesignView({ globalPeriodRange, syncTick, search }) {
       {/* Row 1: month over month + by type */}
       <div className="nu-grid nu-grid--3">
         <ChartFrame
-          title="Task throughput"
+          title="Task Throughput"
           caption="Total · Completed by month"
           empty={monthData.length === 0}
           legend={[
@@ -237,7 +237,7 @@ export function DesignView({ globalPeriodRange, syncTick, search }) {
         </ChartFrame>
 
         <ChartFrame
-          title="By type"
+          title="Type-wise Distribution"
           caption={`${typeData.length} categories`}
           empty={typeData.length === 0}
         >
@@ -264,7 +264,7 @@ export function DesignView({ globalPeriodRange, syncTick, search }) {
         </ChartFrame>
 
         <ChartFrame
-          title="Status breakdown"
+          title="Status Breakdown"
           caption={`${statusData.length} states`}
           empty={statusData.length === 0}
         >
@@ -282,8 +282,8 @@ export function DesignView({ globalPeriodRange, syncTick, search }) {
       {/* Row 2: team performance + reach summary */}
       <div className="nu-grid">
         <ChartFrame
-          title="Resource performance"
-          caption="Stacked: Usability · Surveys · Other"
+          title="Resource Performance"
+          caption="Stacked: Usability · Surveys · Misc."
           empty={personData.length === 0}
           legend={[
             { label: 'Usability', color: colors.accent },
@@ -316,7 +316,7 @@ export function DesignView({ globalPeriodRange, syncTick, search }) {
         </ChartFrame>
 
         <ChartFrame
-          title="Stakeholder requests"
+          title="Stakeholder Requests"
           caption="Top 10 by task count"
           empty={stakeholderData.length === 0}
         >
@@ -339,7 +339,7 @@ export function DesignView({ globalPeriodRange, syncTick, search }) {
       {/* Row 3: research reach */}
       <div className="nu-grid nu-grid--2" style={{ marginTop: 14 }}>
         <ChartFrame
-          title="Usability participants vs survey respondents"
+          title="Usability Participants vs. Survey Respondents"
           caption="Research reach"
           empty={participantsSummary.every((d) => d.value === 0)}
           legend={participantsSummary.map((d) => ({ label: d.name, color: d.fill }))}
@@ -367,8 +367,8 @@ export function DesignView({ globalPeriodRange, syncTick, search }) {
         </ChartFrame>
 
         <ChartFrame
-          title="Participants by month"
-          caption="Usability participants · survey respondents"
+          title="Participants By Month"
+          caption="Usability participants · Survey respondents"
           empty={participantMonthData.every((d) => d.usability_participants === 0 && d.survey_users === 0)}
           legend={[
             { label: 'Usability participants', color: colors.palette[1] },

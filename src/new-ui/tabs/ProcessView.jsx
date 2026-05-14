@@ -115,7 +115,7 @@ export function ProcessView({ syncTick, search }) {
     <section className="nu-page">
       <header className="nu-page__head">
         <div className="nu-page__heading">
-          <h1>Process Team</h1>
+          <h1>Process Innovation</h1>
           <p>Process inventory across channels with turnaround and contributor productivity views.</p>
         </div>
       </header>
@@ -124,7 +124,7 @@ export function ProcessView({ syncTick, search }) {
 
       <div className="nu-kpi-row">
         <div className="nu-rise" data-i="0">
-          <KpiCard label="Unique processes" value={totalProcesses} sub="Across process inventory" filled />
+          <KpiCard label="Unique Processes" value={totalProcesses} sub="Across process inventory" filled />
         </div>
         <div className="nu-rise" data-i="1">
           <KpiCard label="Channels" value={countsShown.length} sub={`${counts.length} total channels`} />
@@ -136,13 +136,13 @@ export function ProcessView({ syncTick, search }) {
           <KpiCard label="Non-BVS" value={bvs.nonBvs} sub={`${100 - bvsPct}% of all processes`} />
         </div>
         <div className="nu-rise" data-i="4">
-          <KpiCard label="TAT reduction areas" value={tatTeams.length} sub="With TAT distribution" />
+          <KpiCard label="TAT Reduction areas" value={tatTeams.length} sub="With TAT distribution" />
         </div>
       </div>
 
       <div className="nu-grid">
         <ChartFrame
-          title="By channel"
+          title="By Channel"
           caption={`${channelBarData.length} channels`}
           empty={channelBarData.length === 0}
         >
@@ -192,7 +192,7 @@ export function ProcessView({ syncTick, search }) {
 
       <div className="nu-grid nu-grid--full" style={{ marginTop: 14 }}>
         <ChartFrame
-          title="Turnaround distribution"
+          title="Turnaround Distribution"
           caption={`${effectiveTatTeam || 'No team'} · ${tatRows.length} buckets`}
           action={
             <span style={{ display: 'inline-flex', gap: 8, alignItems: 'center' }}>
@@ -241,7 +241,7 @@ export function ProcessView({ syncTick, search }) {
                 barCategoryGap={28}
                 margin={chartMargins()}
                 accessibilityLayer
-                aria-label={`Turnaround distribution for ${effectiveTatTeam || 'selected team'}`}
+                aria-label={`Turnaround Distribution for ${effectiveTatTeam || 'selected team'}`}
               >
                 <CartesianGrid {...gridProps(colors)} />
                 <XAxis dataKey="month" {...axisProps(colors, { side: 'x' })} />
@@ -265,7 +265,7 @@ export function ProcessView({ syncTick, search }) {
 
       <div className="nu-grid nu-grid--full" style={{ marginTop: 14 }}>
         <ChartFrame
-          title="Team productivity — new vs revamp"
+          title="Team Productivity | New vs. Revamp"
           caption={`${prodGrid.length} contributors`}
           action={<ViewToggle value={prodView} onChange={setProdView} />}
           empty={prodGrid.length === 0}

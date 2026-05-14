@@ -168,5 +168,6 @@ export function LoginScreen({ onSuccess }) {
       <div style={{ marginTop: 20, fontSize: 11, color: C.muted }}>
         Jazz World · 2026
     </div>
+    </div>
   );
 }
