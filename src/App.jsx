@@ -7,6 +7,7 @@ import { ProcessTab } from './tabs/ProcessTab.jsx';
 import { SyncButton } from './components/SyncButton.jsx';
 import { Diagnostics } from './pages/Diagnostics.jsx';
 import NewUI from './new-ui/NewUI.jsx';
+import { LoginScreen } from './components/LoginScreen.jsx';
 
 
 // ─── MAIN ─────────────────────────────────────────────────────────────────────
@@ -32,7 +33,19 @@ function formatRelative(iso) {
   return `${days} day${days === 1 ? '' : 's'} ago`;
 }
 
+function isAuthenticated() {
+  const expected = import.meta.env.VITE_APP_PASSWORD;
+  if (!expected) return true; // gate disabled if no password set
+  return sessionStorage.getItem('cjo_auth') === '1';
+}
+
 export default function CJODashboard() {
+  const [authed, setAuthed] = useState(() => isAuthenticated());
+
+  if (!authed) {
+    return <LoginScreen onSuccess={() => setAuthed(true)} />;
+  }
+
   if (typeof window !== 'undefined' && window.location.pathname === '/diagnostics') {
     return <Diagnostics />;
   }
