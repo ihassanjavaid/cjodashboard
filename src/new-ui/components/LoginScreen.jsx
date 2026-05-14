@@ -31,7 +31,8 @@ export function LoginScreen({ onSuccess }) {
     setLoading(true);
     setTimeout(() => {
       if (password === expected) {
-        sessionStorage.setItem('cjo_auth', '1');
+        const token = 'v1_' + btoa(expected).slice(0, 14);
+        sessionStorage.setItem('cjo_auth', token);
         onSuccess();
       } else {
         setError('Incorrect password. Please try again.');
@@ -165,7 +166,7 @@ export function LoginScreen({ onSuccess }) {
 
       {/* Footer */}
       <div style={{ marginTop: 20, fontSize: 11, color: C.muted }}>
-        Jazz World
+        Jazz World · 2026
       </div>
     </div>
   );

@@ -33,10 +33,23 @@ function formatRelative(iso) {
   return `${days} day${days === 1 ? '' : 's'} ago`;
 }
 
+// Derive a token from the password so old sessions (storing '1') are
+// automatically invalidated when the password is first set or changed.
+function authToken() {
+  const pw = import.meta.env.VITE_APP_PASSWORD;
+  if (!pw) return null;
+  return 'v1_' + btoa(pw).slice(0, 14);
+}
+
 function isAuthenticated() {
-  const expected = import.meta.env.VITE_APP_PASSWORD;
-  if (!expected) return true; // gate disabled if no password set
-  return sessionStorage.getItem('cjo_auth') === '1';
+  const token = authToken();
+  if (!token) return true; // gate disabled — no password configured
+  return sessionStorage.getItem('cjo_auth') === token;
+}
+
+export function logout() {
+  sessionStorage.removeItem('cjo_auth');
+  window.location.reload();
 }
 
 export default function CJODashboard() {

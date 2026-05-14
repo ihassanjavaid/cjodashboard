@@ -44,7 +44,7 @@ const ICONS = {
 const TEAM_TAB_IDS = ['design', 'std', 'process'];
 const OVERVIEW_TAB_IDS = ['strategy'];
 
-export function Sidebar({ tabs, activeTab, onChangeTab, lastSyncedAt, onSyncComplete, syncStatus }) {
+export function Sidebar({ tabs, activeTab, onChangeTab, lastSyncedAt, onSyncComplete, syncStatus, onLogout }) {
   const tabById = Object.fromEntries(tabs.map((t) => [t.id, t]));
   const teamTabs     = TEAM_TAB_IDS.map((id) => tabById[id]).filter(Boolean);
   const overviewTabs = OVERVIEW_TAB_IDS.map((id) => tabById[id]).filter(Boolean);
@@ -102,6 +102,24 @@ export function Sidebar({ tabs, activeTab, onChangeTab, lastSyncedAt, onSyncComp
           lastSyncedAt={lastSyncedAt}
           onSyncComplete={onSyncComplete}
         />
+
+        {onLogout && (
+          <button
+            type="button"
+            className="nu-nav__item"
+            onClick={onLogout}
+            style={{ marginTop: 6, color: 'var(--nu-ink-3)', opacity: 0.75 }}
+          >
+            <span className="nu-nav__item-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                <polyline points="16 17 21 12 16 7" />
+                <line x1="21" y1="12" x2="9" y2="12" />
+              </svg>
+            </span>
+            <span>Log out</span>
+          </button>
+        )}
       </nav>
     </aside>
   );

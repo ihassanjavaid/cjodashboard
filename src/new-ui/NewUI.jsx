@@ -6,6 +6,7 @@ import './new-ui.css';
 import { Sidebar } from './components/Sidebar.jsx';
 import { TopBar } from './components/TopBar.jsx';
 import { sortPeriods } from './lib/utils.js';
+import { logout } from '../App.jsx';
 
 import { DesignView } from './tabs/DesignView.jsx';
 import { StandardizationView } from './tabs/StandardizationView.jsx';
@@ -84,6 +85,7 @@ export default function NewUI() {
           lastSyncedAt={lastSyncedAt}
           onSyncComplete={onSyncComplete}
           syncStatus={overallStatus}
+          onLogout={logout}
         />
 
         <div className="nu-main">
