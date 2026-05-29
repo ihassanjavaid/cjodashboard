@@ -172,7 +172,7 @@ export function DesignView({ globalPeriodRange, syncTick, search }) {
           <KpiCard
             label="Total Tasks"
             value={totalTasks}
-            sub="completed in this period"
+            sub="Completed & Active Tasks"
             filled
           />
         </div>
