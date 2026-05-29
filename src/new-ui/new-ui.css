@@ -705,6 +705,13 @@
 
 /* ── Summary (BETA) ─────────────────────────────────────────────────────── */
 
+/* Let each inner card read clearly; avoid one flat panel matching the narrative. */
+.nu-summary.nu-page {
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
+}
+
 .nu-summary__loading,
 .nu-summary__empty {
   font-size: 14px;
@@ -722,13 +729,12 @@
   font-size: 13px;
 }
 
-.nu-summary__card {
-  background: var(--nu-card);
-  border: 1px solid var(--nu-line);
-  border-radius: var(--nu-r-card);
-  padding: 22px 24px;
+.nu-summary__narrative-card {
   margin-bottom: 18px;
-  box-shadow: var(--nu-shadow-card);
+}
+
+.nu-summary__narrative-card .nu-card__body {
+  align-items: stretch;
 }
 
 .nu-summary__narrative {
@@ -761,11 +767,30 @@
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 14px;
+  margin-bottom: 14px;
 }
 
 @media (max-width: 1100px) {
   .nu-summary__charts { grid-template-columns: 1fr; }
 }
+
+.nu-summary__insights {
+  margin-bottom: 18px;
+}
+
+.nu-summary__insights-list {
+  margin: 0;
+  padding: 0 0 0 1.15em;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--nu-ink-2);
+}
+
+.nu-summary__insights-list li { padding-left: 4px; }
+.nu-summary__insights-list strong { color: var(--nu-ink); font-weight: 600; }
 
 /* ── Buttons ────────────────────────────────────────────────────────────── */
 

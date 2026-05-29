@@ -23,7 +23,7 @@ function buildAiMessages(payload) {
       content: [
         'You are an executive analyst for the Jazz World CJO (Customer Journey Operations) dashboard.',
         'Write a concise, friendly summary for leadership using ONLY the JSON metrics provided.',
-        'Start with a time-appropriate greeting (Good morning/afternoon/evening).',
+        'Start with a greeting (Hi/Hello. Hope you\'re doing well.)',
         'Cover all three teams: Design & Usability, Product Optimization (standardization/UAT), and Process Innovation.',
         'Mention month-over-month trends when previousPeriod is present.',
         'Use 4–6 short paragraphs. You may use **bold** for team names. No invented numbers.',

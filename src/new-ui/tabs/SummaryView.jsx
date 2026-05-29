@@ -2,14 +2,15 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
-  Bar, BarChart, CartesianGrid, Cell, Legend, ResponsiveContainer,
+  Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer,
   Tooltip, XAxis, YAxis,
 } from 'recharts';
 import { ChartFrame, NUTooltip } from '../components/ChartFrame.jsx';
+import { DonutChart } from '../components/DonutChart.jsx';
 import { KpiCard } from '../components/KpiCard.jsx';
 import { Pill } from '../components/primitives.jsx';
 import { axisProps, chartColors, chartMargins, gridProps } from '../lib/chartTheme.js';
-import { fmt, relativeTime } from '../lib/utils.js';
+import { relativeTime } from '../lib/utils.js';
 
 function renderInlineBold(text) {
   const parts = String(text).split(/(\*\*[^*]+\*\*)/g);
@@ -19,6 +20,27 @@ function renderInlineBold(text) {
     }
     return part;
   });
+}
+
+function buildInsights(metrics, deltas, period, previousPeriod) {
+  if (!metrics) return [];
+  const { design, std, process } = metrics;
+  const bullets = [
+    `**Design & Usability** — ${design.totalTasks} tasks in ${period}; ${design.completionPct}% completed (${design.completed} done, ${design.inProgress} in progress).`,
+    `**Product Optimization** — ${std.totalUATs} UAT cycles with ${std.passRatePct}% case success; ${std.issuesFixed} issues fixed of ${std.issuesHighlighted} highlighted.`,
+    `**Process Innovation** — ${process.prodNew + process.prodRevamp} deliveries (${process.prodNew} new, ${process.prodRevamp} revamped); ${process.bvsPct}% BVS coverage.`,
+  ];
+  if (previousPeriod && deltas) {
+    const fmtDelta = (n, label) => {
+      if (n === 0) return `${label} held steady vs ${previousPeriod}.`;
+      const dir = n > 0 ? 'up' : 'down';
+      return `${label} is ${dir} ${Math.abs(n)} vs ${previousPeriod}.`;
+    };
+    bullets.push(fmtDelta(deltas.designTasks, 'Design volume'));
+    bullets.push(fmtDelta(deltas.stdUats, 'UAT volume'));
+    bullets.push(fmtDelta(deltas.processDelivery, 'Process delivery'));
+  }
+  return bullets;
 }
 
 function NarrativeBody({ text }) {
@@ -63,8 +85,21 @@ export function SummaryView({ focusPeriod, syncTick }) {
   useEffect(() => { load(false); }, [load, syncTick]);
 
   const m = data?.metrics;
-  const trendData = data?.charts?.monthTrend ?? [];
   const teamData = data?.charts?.teamComparison ?? [];
+  const insights = useMemo(
+    () => buildInsights(m, data?.deltas, data?.period, data?.previousPeriod),
+    [m, data?.deltas, data?.period, data?.previousPeriod],
+  );
+  const designMix = useMemo(() => {
+    if (!m?.design) return [];
+    return [
+      { name: 'Usability', value: m.design.usability },
+      { name: 'Expert analysis', value: m.design.expert },
+      { name: 'Survey', value: m.design.survey },
+      { name: 'Sentiment', value: m.design.sentiment },
+      { name: 'App pulse', value: m.design.pulse },
+    ].filter((d) => d.value > 0);
+  }, [m]);
 
   return (
     <main className="nu-page nu-summary">
@@ -102,7 +137,7 @@ export function SummaryView({ focusPeriod, syncTick }) {
       {data?.period && m && (
         <>
           <div className="nu-kpi-row">
-            <KpiCard label="Design, Usability & VOC Tasks" value={m.design.totalTasks} sub={`${m.design.completionPct}Completed`} />
+            <KpiCard label="Design, Usability & VOC Tasks" value={m.design.totalTasks} sub={`${m.design.completionPct} Completed`} />
             <KpiCard label="UAT Cycles/Tasks" value={m.std.totalUATs} sub={`${m.std.passRatePct}% Success Rate`} filled />
             <KpiCard
               label="Process Optimization"
@@ -112,19 +147,27 @@ export function SummaryView({ focusPeriod, syncTick }) {
             {/* <KpiCard label="Unique processes" value={m.process.unique} sub={`${m.process.bvsPct}% BVS`} /> */}
           </div>
 
-          <section className="nu-summary__card">
-            {data.narrative
-              ? <NarrativeBody text={data.narrative} />
-              : <p className="nu-summary__empty">No narrative available.</p>}
-            <footer className="nu-summary__meta">
-              {data.generatedAt && <span>Generated {relativeTime(data.generatedAt)}</span>}
-              {data.lastSyncedAt && <span>Data synced {relativeTime(data.lastSyncedAt)}</span>}
-              {data.previousPeriod && <span>Compared with {data.previousPeriod}</span>}
-            </footer>
+          <section className="nu-card nu-chart-card nu-summary__narrative-card">
+            <header className="nu-card__head">
+              <div>
+                <h3 className="nu-card__title">Executive summary</h3>
+                <div className="nu-card__caption">AI narrative for {data.period}</div>
+              </div>
+            </header>
+            <div className="nu-card__body">
+              {data.narrative
+                ? <NarrativeBody text={data.narrative} />
+                : <p className="nu-summary__empty">No narrative available.</p>}
+              <footer className="nu-summary__meta">
+                {data.generatedAt && <span>Generated {relativeTime(data.generatedAt)}</span>}
+                {data.lastSyncedAt && <span>Data synced {relativeTime(data.lastSyncedAt)}</span>}
+                {data.previousPeriod && <span>Compared with {data.previousPeriod}</span>}
+              </footer>
+            </div>
           </section>
 
           <div className="nu-summary__charts">
-            <ChartFrame title="Activity By Team" caption={data.period}>
+            <ChartFrame title="Activity by team" caption={data.period}>
               <ResponsiveContainer width="100%" height={260}>
                 <BarChart data={teamData} margin={chartMargins()}>
                   <CartesianGrid {...gridProps(colors)} />
@@ -140,23 +183,30 @@ export function SummaryView({ focusPeriod, syncTick }) {
               </ResponsiveContainer>
             </ChartFrame>
 
-            <ChartFrame
-              title="Month-over-month Trend"
-              caption={data.previousPeriod ? `${data.previousPeriod} → ${data.period}` : data.period}
-            >
-              <ResponsiveContainer width="100%" height={280}>
-                <BarChart data={trendData} margin={chartMargins()}>
-                  <CartesianGrid {...gridProps(colors)} />
-                  <XAxis dataKey="name" {...axisProps(colors)} />
-                  <YAxis allowDecimals={false} {...axisProps(colors, { side: 'y' })} />
-                  <Tooltip content={<NUTooltip />} formatter={(v) => fmt(v)} />
-                  <Legend />
-                  <Bar dataKey="previous" name="Previous" fill={colors.ink4} radius={[4, 4, 0, 0]} />
-                  <Bar dataKey="current" name="Current" fill={colors.accent} radius={[4, 4, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
+            <ChartFrame title="Design work mix" caption={`${data.period} · task types`}>
+              <DonutChart
+                data={designMix}
+                colors={colors}
+                primaryName="Usability"
+                totalLabel="tasks"
+                ariaLabel="Design task types for the period"
+              />
             </ChartFrame>
           </div>
+
+          <section className="nu-card nu-chart-card nu-summary__insights">
+            <header className="nu-card__head">
+              <div>
+                <h3 className="nu-card__title">Key insights</h3>
+                <div className="nu-card__caption">Derived from synced dashboard metrics</div>
+              </div>
+            </header>
+            <ul className="nu-summary__insights-list">
+              {insights.map((line, i) => (
+                <li key={i}>{renderInlineBold(line)}</li>
+              ))}
+            </ul>
+          </section>
         </>
       )}
 
