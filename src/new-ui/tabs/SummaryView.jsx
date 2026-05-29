@@ -167,7 +167,7 @@ export function SummaryView({ focusPeriod, syncTick }) {
           </section>
 
           <div className="nu-summary__charts">
-            <ChartFrame title="Activity by team" caption={data.period}>
+            <ChartFrame title="Activity By Team" caption={data.period}>
               <ResponsiveContainer width="100%" height={260}>
                 <BarChart data={teamData} margin={chartMargins()}>
                   <CartesianGrid {...gridProps(colors)} />
@@ -183,7 +183,7 @@ export function SummaryView({ focusPeriod, syncTick }) {
               </ResponsiveContainer>
             </ChartFrame>
 
-            <ChartFrame title="Design work mix" caption={`${data.period} · task types`}>
+            <ChartFrame title="D&U Work Mix" caption={`${data.period} · Task Types`}>
               <DonutChart
                 data={designMix}
                 colors={colors}
@@ -197,7 +197,7 @@ export function SummaryView({ focusPeriod, syncTick }) {
           <section className="nu-card nu-chart-card nu-summary__insights">
             <header className="nu-card__head">
               <div>
-                <h3 className="nu-card__title">Key insights</h3>
+                <h3 className="nu-card__title">Key Insights - Metrics & Numbers</h3>
                 <div className="nu-card__caption">Derived from synced dashboard metrics</div>
               </div>
             </header>
