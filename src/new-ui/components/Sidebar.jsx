@@ -39,11 +39,19 @@ const ICONS = {
       <path d="M12 8v4l2 2" />
     </svg>
   ),
+  summary: (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3z" />
+      <path d="M5 19h14" />
+      <path d="M8 16h8" />
+    </svg>
+  ),
 };
 
+const OVERVIEW_TAB_IDS = ['summary'];
 const TEAM_TAB_IDS = ['design', 'std', 'process'];
-const OVERVIEW_TAB_IDS = ['strategy'];
-const DISABLED_TAB_IDS = ['strategy']; // temporarily disabled
+const GENERAL_TAB_IDS = ['strategy'];
+const DISABLED_TAB_IDS = ['strategy'];
 
 function CollapseIcon({ collapsed }) {
   return (
@@ -78,6 +86,7 @@ export function Sidebar({
   const tabById = Object.fromEntries(tabs.map((t) => [t.id, t]));
   const teamTabs     = TEAM_TAB_IDS.map((id) => tabById[id]).filter(Boolean);
   const overviewTabs = OVERVIEW_TAB_IDS.map((id) => tabById[id]).filter(Boolean);
+  const generalTabs  = GENERAL_TAB_IDS.map((id) => tabById[id]).filter(Boolean);
 
   const renderItem = (t) => {
     const disabled = DISABLED_TAB_IDS.includes(t.id);
@@ -91,12 +100,12 @@ export function Sidebar({
         onClick={() => !disabled && onChangeTab(t.id)}
         aria-current={t.id === activeTab ? 'page' : undefined}
         aria-disabled={disabled}
-        title={collapsed ? (disabled ? 'Coming soon' : t.label) : (disabled ? 'Coming soon' : undefined)}
+        title={collapsed ? (disabled ? `${t.label} (disabled)` : t.label) : (disabled ? 'Disabled' : undefined)}
       >
         <span className="nu-nav__item-icon">{ICONS[t.id]}</span>
         <span>{t.label}</span>
         {disabled
-          ? <span className="nu-nav__badge">Soon</span>
+          ? <span className="nu-nav__badge">Disabled</span>
           : t.count != null && <span className="nu-nav__count">{t.count}</span>
         }
       </button>
@@ -114,31 +123,46 @@ export function Sidebar({
       </div>
 
       <nav className="nu-nav" aria-label="Primary">
+        {overviewTabs.length > 0 && (
+          <div className="nu-nav__group">
+            <span className="nu-nav__label">Overview</span>
+            {overviewTabs.map((t) => (
+              <button
+                key={t.id}
+                type="button"
+                className="nu-nav__item"
+                data-active={t.id === activeTab}
+                onClick={() => onChangeTab(t.id)}
+                aria-current={t.id === activeTab ? 'page' : undefined}
+                title={collapsed ? t.label : undefined}
+              >
+                <span className="nu-nav__item-icon">{ICONS[t.id]}</span>
+                <span>{t.label}</span>
+                <span className="nu-nav__badge">Beta</span>
+              </button>
+            ))}
+          </div>
+        )}
+
         <div className="nu-nav__group">
           <span className="nu-nav__label">Teams</span>
           {teamTabs.map(renderItem)}
         </div>
 
-        {overviewTabs.length > 0 && (
-          <div className="nu-nav__group">
-            <span className="nu-nav__label">Overview</span>
-            {overviewTabs.map(renderItem)}
-          </div>
-        )}
-
         <div className="nu-nav__group">
-  <span className="nu-nav__label">General</span>
-  <span
-    className="nu-nav__item"
-    data-disabled="true"
-    aria-disabled="true"
-    title={collapsed ? 'Diagnostics (disabled)' : 'Disabled'}
-  >
-    <span className="nu-nav__item-icon">{ICONS.diagnostics}</span>
-    <span>Diagnostics</span>
-    <span className="nu-nav__badge">Disabled</span>
-  </span>
-</div>
+          <span className="nu-nav__label">General</span>
+          {generalTabs.map(renderItem)}
+          <span
+            className="nu-nav__item"
+            data-disabled="true"
+            aria-disabled="true"
+            title={collapsed ? 'Diagnostics (disabled)' : 'Disabled'}
+          >
+            <span className="nu-nav__item-icon">{ICONS.diagnostics}</span>
+            <span>Diagnostics</span>
+            <span className="nu-nav__badge">Disabled</span>
+          </span>
+        </div>
 
         <div style={{ flex: 1 }} />
 

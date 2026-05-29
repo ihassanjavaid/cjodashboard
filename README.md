@@ -14,7 +14,8 @@ A live dashboard for the Customer Journey Operations team, fed by three Google S
 | **Design & Usability** | Design sheet (one worksheet per month) | Research, usability, survey, sentiment, and pulse tasks per resource and month. |
 | **Standardization** | Std sheet (BAU + JLV worksheets) | UAT activity, pass/fail rates, manned-hour load, raised-vs-fixed issues. |
 | **Process Team** | Process sheet | Channel distribution, BVS coverage, TAT distribution, productivity (new vs revamp). |
-| **Strategic Overview** | Cross-team rollup | Aggregated view across all three streams. |
+| **Summary (BETA)** | All three sheets | AI-written month overview with cross-team charts ([/new-ui](https://cjodash.vercel.app/new-ui) → Overview). |
+| **Strategic Overview** | Cross-team rollup | Aggregated view across all three streams (legacy tab). |
 
 ---
 
@@ -52,6 +53,8 @@ vercel dev            # serves at http://localhost:3000
 
 `vercel dev` runs the SPA + the `/api/*` serverless functions together. Plain `npm run dev` only runs Vite, so the API routes won't work — always use `vercel dev` for full-stack local development.
 
+Without Upstash KV vars, the API uses a **temporary in-memory cache** and **live Google Sheet fetches** (same as production sync sources). Add `KV_REST_API_URL` and `KV_REST_API_TOKEN` from Vercel when you want persisted cache across restarts.
+
 ---
 
 ## Deploying to your own Vercel account
@@ -75,6 +78,8 @@ The free tier is sufficient.
 | `KV_REST_API_URL`, `KV_REST_API_TOKEN`, `KV_REST_API_READ_ONLY_TOKEN`, `KV_URL`, `REDIS_URL` | Upstash Redis instance (provisioned via Vercel Marketplace) |
 | `SYNC_SECRET` | Authorizes external sync triggers (`/api/sync` direct calls) |
 | `DIAGNOSTICS_PASSWORD` | Gates the `/diagnostics` page |
+| `GROQ_API_KEY` | Optional — free [Groq](https://console.groq.com) key for AI Summary narrative (OpenAI-compatible). Without it, the Summary tab uses a local template. |
+| `AI_BASE_URL`, `AI_MODEL` | Optional overrides (defaults: Groq `https://api.groq.com/openai/v1`, `llama-3.3-70b-versatile`). `OPENAI_API_KEY` / `AI_API_KEY` also work. |
 
 ---
 

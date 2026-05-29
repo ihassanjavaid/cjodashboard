@@ -11,9 +11,9 @@ import { logout } from '../App.jsx';
 import { DesignView } from './tabs/DesignView.jsx';
 import { StandardizationView } from './tabs/StandardizationView.jsx';
 import { ProcessView } from './tabs/ProcessView.jsx';
-import { StrategyView } from './tabs/StrategyView.jsx';
-
+import { SummaryView } from './tabs/SummaryView.jsx';
 const TABS = [
+  { id: 'summary',  label: 'AI Summary' },
   { id: 'design',   label: 'Design & Usability' },
   { id: 'std',      label: 'Product Optimization' },
   { id: 'process',  label: 'Process Innovation' },
@@ -89,6 +89,7 @@ export default function NewUI() {
 
   const clearPeriod = () => { setPeriodFrom('All'); setPeriodTo('All'); };
   const showPeriod = activeTab !== 'process';
+  const summaryPeriod = periodFrom !== 'All' ? periodFrom : null;
 
   return (
     <div className="nu">
@@ -120,10 +121,10 @@ export default function NewUI() {
             showPeriod={showPeriod}
           />
 
+          {activeTab === 'summary'  && <SummaryView key={`summary-${summaryPeriod ?? 'auto'}`} focusPeriod={summaryPeriod} syncTick={syncTick} />}
           {activeTab === 'design'   && <DesignView   key="design"   globalPeriodRange={globalPeriodRange} syncTick={syncTick} search={search} />}
           {activeTab === 'std'      && <StandardizationView key="std" globalPeriodRange={globalPeriodRange} syncTick={syncTick} search={search} />}
           {activeTab === 'process'  && <ProcessView  key="process"  syncTick={syncTick} search={search} />}
-          {activeTab === 'strategy' && <StrategyView key="strategy" syncTick={syncTick} search={search} />}
         </div>
       </div>
     </div>

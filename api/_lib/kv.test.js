@@ -1,13 +1,14 @@
 // @vitest-environment node
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-
-vi.mock('@vercel/kv', () => import('../../tests/mocks/kv.js'));
-
-const { kv } = await import('@vercel/kv');
-const { setData, getData, setMeta, getMeta, pushSyncHistory, readSyncHistory, acquireSyncLock } = await import('./kv.js');
+import { describe, it, expect, beforeEach } from 'vitest';
+import { kv as memoryKv } from '../../tests/mocks/kv.js';
+import { setData, getData, setMeta, getMeta, pushSyncHistory, readSyncHistory, acquireSyncLock } from './kv.js';
 
 describe('kv wrapper', () => {
-  beforeEach(() => kv.__reset());
+  beforeEach(() => {
+    memoryKv.__reset();
+    delete process.env.KV_REST_API_URL;
+    delete process.env.KV_REST_API_TOKEN;
+  });
 
   it('round-trips data:<tab>', async () => {
     await setData('design', [{ a: 1 }, { a: 2 }]);
