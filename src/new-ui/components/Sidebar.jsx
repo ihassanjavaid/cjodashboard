@@ -97,14 +97,22 @@ export function Sidebar({ tabs, activeTab, onChangeTab, lastSyncedAt, onSyncComp
           </div>
         )}
 
-        <div className="nu-nav__group">
+        {/* <div className="nu-nav__group">
   <span className="nu-nav__label">General</span>
   <span className="nu-nav__item" data-disabled="true" aria-disabled="true" title="Disabled">
     <span className="nu-nav__item-icon">{ICONS.diagnostics}</span>
     <span>Diagnostics</span>
     <span className="nu-nav__badge">Disabled</span>
   </span>
-</div>
+</div> */}
+
+        <div className="nu-nav__group">
+          <span className="nu-nav__label">General</span>
+          <a className="nu-nav__item" href="/diagnostics">
+            <span className="nu-nav__item-icon">{ICONS.diagnostics}</span>
+            <span>Diagnostics</span>
+          </a>
+        </div>
 
         <div style={{ flex: 1 }} />
 
