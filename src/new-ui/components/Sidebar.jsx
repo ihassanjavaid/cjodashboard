@@ -186,8 +186,8 @@ function SyncCard({ status, lastSyncedAt, onSyncComplete }) {
     label = 'Last synced';
     timeText = relativeTime(lastSyncedAt);
   } else if (status === 'unconfigured' || status === 'never-synced' || status === 'hardcoded') {
-    label = 'Showing fallback';
-    timeText = 'Sheet not synced';
+    label = 'Showing Fallback';
+    timeText = 'Sheet Not Synced';
   }
 
   return (
