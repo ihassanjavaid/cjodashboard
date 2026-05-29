@@ -127,9 +127,9 @@ export function SummaryView({ focusPeriod, syncTick }) {
             <ChartFrame title="Activity by team" caption={data.period}>
               <ResponsiveContainer width="100%" height={260}>
                 <BarChart data={teamData} margin={chartMargins()}>
-                  <CartesianGrid {...gridProps()} />
-                  <XAxis dataKey="name" {...axisProps()} />
-                  <YAxis allowDecimals={false} {...axisProps()} />
+                  <CartesianGrid {...gridProps(colors)} />
+                  <XAxis dataKey="name" {...axisProps(colors)} />
+                  <YAxis allowDecimals={false} {...axisProps(colors, { side: 'y' })} />
                   <Tooltip content={<NUTooltip />} />
                   <Bar dataKey="value" name="Count" radius={[6, 6, 0, 0]}>
                     {teamData.map((_, i) => (
@@ -146,9 +146,9 @@ export function SummaryView({ focusPeriod, syncTick }) {
             >
               <ResponsiveContainer width="100%" height={280}>
                 <BarChart data={trendData} margin={chartMargins()}>
-                  <CartesianGrid {...gridProps()} />
-                  <XAxis dataKey="name" {...axisProps()} tick={{ fontSize: 11 }} />
-                  <YAxis allowDecimals={false} {...axisProps()} />
+                  <CartesianGrid {...gridProps(colors)} />
+                  <XAxis dataKey="name" {...axisProps(colors)} />
+                  <YAxis allowDecimals={false} {...axisProps(colors, { side: 'y' })} />
                   <Tooltip content={<NUTooltip />} formatter={(v) => fmt(v)} />
                   <Legend />
                   <Bar dataKey="previous" name="Previous" fill={colors.ink4} radius={[4, 4, 0, 0]} />
