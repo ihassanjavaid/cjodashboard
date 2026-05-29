@@ -30,6 +30,21 @@ export default function NewUI() {
   const [availablePeriods, setAvailablePeriods] = useState([]);
   const [overallStatus, setOverallStatus] = useState('loading');
   const [search, setSearch] = useState('');
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
+    try {
+      return localStorage.getItem('nu-sidebar-collapsed') === '1';
+    } catch {
+      return false;
+    }
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('nu-sidebar-collapsed', sidebarCollapsed ? '1' : '0');
+    } catch {
+      /* ignore */
+    }
+  }, [sidebarCollapsed]);
 
   // Probe live data on mount + after sync to learn lastSyncedAt + periods in data.
   // Period options are scoped to the active tab so Design's dropdown only shows
@@ -77,7 +92,10 @@ export default function NewUI() {
 
   return (
     <div className="nu">
-      <div className="nu-shell">
+      <div
+        className="nu-shell"
+        data-sidebar-collapsed={sidebarCollapsed || undefined}
+      >
         <Sidebar
           tabs={TABS}
           activeTab={activeTab}
@@ -86,6 +104,8 @@ export default function NewUI() {
           onSyncComplete={onSyncComplete}
           syncStatus={overallStatus}
           onLogout={logout}
+          collapsed={sidebarCollapsed}
+          onToggleCollapsed={() => setSidebarCollapsed((c) => !c)}
         />
 
         <div className="nu-main">

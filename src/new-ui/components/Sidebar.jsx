@@ -45,7 +45,36 @@ const TEAM_TAB_IDS = ['design', 'std', 'process'];
 const OVERVIEW_TAB_IDS = ['strategy'];
 const DISABLED_TAB_IDS = ['strategy']; // temporarily disabled
 
-export function Sidebar({ tabs, activeTab, onChangeTab, lastSyncedAt, onSyncComplete, syncStatus, onLogout }) {
+function CollapseIcon({ collapsed }) {
+  return (
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      style={collapsed ? { transform: 'scaleX(-1)' } : undefined}
+    >
+      <path d="M15 18l-6-6 6-6" />
+    </svg>
+  );
+}
+
+export function Sidebar({
+  tabs,
+  activeTab,
+  onChangeTab,
+  lastSyncedAt,
+  onSyncComplete,
+  syncStatus,
+  onLogout,
+  collapsed = false,
+  onToggleCollapsed,
+}) {
   const tabById = Object.fromEntries(tabs.map((t) => [t.id, t]));
   const teamTabs     = TEAM_TAB_IDS.map((id) => tabById[id]).filter(Boolean);
   const overviewTabs = OVERVIEW_TAB_IDS.map((id) => tabById[id]).filter(Boolean);
@@ -62,7 +91,7 @@ export function Sidebar({ tabs, activeTab, onChangeTab, lastSyncedAt, onSyncComp
         onClick={() => !disabled && onChangeTab(t.id)}
         aria-current={t.id === activeTab ? 'page' : undefined}
         aria-disabled={disabled}
-        title={disabled ? 'Coming soon' : undefined}
+        title={collapsed ? (disabled ? 'Coming soon' : t.label) : (disabled ? 'Coming soon' : undefined)}
       >
         <span className="nu-nav__item-icon">{ICONS[t.id]}</span>
         <span>{t.label}</span>
@@ -99,7 +128,12 @@ export function Sidebar({ tabs, activeTab, onChangeTab, lastSyncedAt, onSyncComp
 
         <div className="nu-nav__group">
   <span className="nu-nav__label">General</span>
-  <span className="nu-nav__item" data-disabled="true" aria-disabled="true" title="Disabled">
+  <span
+    className="nu-nav__item"
+    data-disabled="true"
+    aria-disabled="true"
+    title={collapsed ? 'Diagnostics (disabled)' : 'Disabled'}
+  >
     <span className="nu-nav__item-icon">{ICONS.diagnostics}</span>
     <span>Diagnostics</span>
     <span className="nu-nav__badge">Disabled</span>
@@ -112,40 +146,51 @@ export function Sidebar({ tabs, activeTab, onChangeTab, lastSyncedAt, onSyncComp
           status={syncStatus}
           lastSyncedAt={lastSyncedAt}
           onSyncComplete={onSyncComplete}
+          collapsed={collapsed}
         />
 
-        {onLogout && (
-          <button
-            type="button"
-            className="nu-nav__item"
-            onClick={onLogout}
-            style={{
-  marginTop: 8,
-  color: 'var(--nu-ink-3)',
-  borderTop: '1px solid var(--nu-border)',
-  paddingTop: 10,
-  borderRadius: 0,
-  opacity: 0.7,
-}}
-          >
-            <span className="nu-nav__item-icon">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-                <polyline points="16 17 21 12 16 7" />
-                <line x1="21" y1="12" x2="9" y2="12" />
-              </svg>
-            </span>
-            <span>Log out</span>
-          </button>
-        )}
       </nav>
+
+      {(onLogout || onToggleCollapsed) && (
+        <div className="nu-sidebar__footer">
+          {onLogout && (
+            <button
+              type="button"
+              className="nu-nav__item nu-nav__item--logout"
+              onClick={onLogout}
+              title={collapsed ? 'Log out' : undefined}
+            >
+              <span className="nu-nav__item-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                  <polyline points="16 17 21 12 16 7" />
+                  <line x1="21" y1="12" x2="9" y2="12" />
+                </svg>
+              </span>
+              <span>Log out</span>
+            </button>
+          )}
+          {onToggleCollapsed && (
+            <button
+              type="button"
+              className="nu-sidebar__collapse"
+              onClick={onToggleCollapsed}
+              aria-expanded={!collapsed}
+              aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+              title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            >
+              <CollapseIcon collapsed={collapsed} />
+            </button>
+          )}
+        </div>
+      )}
     </aside>
   );
 }
 
 // ── Sync card (replaces Donezo's promo card) ─────────────────────────────
 
-function SyncCard({ status, lastSyncedAt, onSyncComplete }) {
+function SyncCard({ status, lastSyncedAt, onSyncComplete, collapsed = false }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState(null);
 
@@ -158,7 +203,7 @@ function SyncCard({ status, lastSyncedAt, onSyncComplete }) {
       const data = await res.json().catch(() => ({}));
       if (res.status === 429) {
         const seconds = data.retryAfterSeconds || 120;
-        throw new Error(`Cooldown active. Try again in ${seconds}s.`);
+        throw new Error(`Cooldown Period. Try again in ${seconds}s.`);
       }
       if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
       onSyncComplete?.(data);
@@ -186,8 +231,34 @@ function SyncCard({ status, lastSyncedAt, onSyncComplete }) {
     label = 'Last synced';
     timeText = relativeTime(lastSyncedAt);
   } else if (status === 'unconfigured' || status === 'never-synced' || status === 'hardcoded') {
-    label = 'Showing fallback';
-    timeText = 'Sheet not synced';
+    label = 'Showing Fallback';
+    timeText = 'Sheet Not Synced';
+  }
+
+  const syncIcon = (
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M3 12a9 9 0 0 1 15-6.7L21 8" />
+      <path d="M21 3v5h-5" />
+      <path d="M21 12a9 9 0 0 1-15 6.7L3 16" />
+      <path d="M3 21v-5h5" />
+    </svg>
+  );
+
+  if (collapsed) {
+    const compactTitle = busy ? 'Syncing…' : error ? `Sync failed: ${timeText}` : `${label}: ${timeText}`;
+    return (
+      <button
+        type="button"
+        className="nu-sync-card nu-sync-card--compact"
+        onClick={handleSync}
+        disabled={busy}
+        title={compactTitle}
+        aria-label={busy ? 'Syncing' : 'Sync now'}
+      >
+        <span className={dotClass} aria-hidden="true" />
+        {syncIcon}
+      </button>
+    );
   }
 
   return (
@@ -198,12 +269,7 @@ function SyncCard({ status, lastSyncedAt, onSyncComplete }) {
         {timeText}
       </div>
       <button type="button" className="nu-sync-card__btn" onClick={handleSync} disabled={busy}>
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-          <path d="M3 12a9 9 0 0 1 15-6.7L21 8" />
-          <path d="M21 3v5h-5" />
-          <path d="M21 12a9 9 0 0 1-15 6.7L3 16" />
-          <path d="M3 21v-5h5" />
-        </svg>
+        {syncIcon}
         {busy ? 'Syncing…' : 'Sync now'}
       </button>
     </section>
