@@ -71,7 +71,7 @@ export function SummaryView({ focusPeriod, syncTick }) {
       <header className="nu-page__head">
         <div className="nu-page__heading">
           <h1>Summary</h1>
-          <p>AI overview across Design, Product Optimization, and Process for the selected month.</p>
+          <p>AI-generated overview across Design & Usability, Product Optimization, and Process Innovation for the selected time period.</p>
         </div>
         <div className="nu-page__actions">
           {data?.period && <Pill>{data.period}</Pill>}
@@ -102,14 +102,14 @@ export function SummaryView({ focusPeriod, syncTick }) {
       {data?.period && m && (
         <>
           <div className="nu-kpi-row">
-            <KpiCard label="Design tasks" value={m.design.totalTasks} sub={`${m.design.completionPct}% completed`} />
-            <KpiCard label="UAT cycles" value={m.std.totalUATs} sub={`${m.std.passRatePct}% pass rate`} filled />
+            <KpiCard label="Design, Usability & VOC Tasks" value={m.design.totalTasks} sub={`${m.design.completionPct}Completed`} />
+            <KpiCard label="UAT Cycles/Tasks" value={m.std.totalUATs} sub={`${m.std.passRatePct}% Success Rate`} filled />
             <KpiCard
-              label="Process delivery"
+              label="Process Optimization"
               value={m.process.prodNew + m.process.prodRevamp}
-              sub={`${m.process.prodNew} new · ${m.process.prodRevamp} revamp`}
+              sub={`${m.process.prodNew} New · ${m.process.prodRevamp} Revamped`}
             />
-            <KpiCard label="Unique processes" value={m.process.unique} sub={`${m.process.bvsPct}% BVS`} />
+            {/* <KpiCard label="Unique processes" value={m.process.unique} sub={`${m.process.bvsPct}% BVS`} /> */}
           </div>
 
           <section className="nu-summary__card">
@@ -124,7 +124,7 @@ export function SummaryView({ focusPeriod, syncTick }) {
           </section>
 
           <div className="nu-summary__charts">
-            <ChartFrame title="Activity by team" caption={data.period}>
+            <ChartFrame title="Activity By Team" caption={data.period}>
               <ResponsiveContainer width="100%" height={260}>
                 <BarChart data={teamData} margin={chartMargins()}>
                   <CartesianGrid {...gridProps(colors)} />
@@ -141,7 +141,7 @@ export function SummaryView({ focusPeriod, syncTick }) {
             </ChartFrame>
 
             <ChartFrame
-              title="Month-over-month trend"
+              title="Month-over-month Trend"
               caption={data.previousPeriod ? `${data.previousPeriod} → ${data.period}` : data.period}
             >
               <ResponsiveContainer width="100%" height={280}>
