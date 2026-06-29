@@ -1,5 +1,6 @@
 import { designSchema, stdSchema, strategySchema, bauSchema, jlvSchema, socialSchema } from './schemas.js';
 import { SHEET_FETCH_OVERRIDES } from '../../src/shared/sheetFetchOverrides.js';
+import { SOCIAL_SHEET_ID, SOCIAL_SHEET_GID } from '../../src/shared/socialSheetDefaults.js';
 
 export const ALL_TABS = ['design', 'std', 'process', 'strategy', 'social'];
 
@@ -26,7 +27,8 @@ const STATIC_PER_TAB = {
 
 export function getSheetConfig(tab) {
   if (!ALL_TABS.includes(tab)) return null;
-  const sheetId = process.env[`SHEET_ID_${tab.toUpperCase()}`];
+  let sheetId = process.env[`SHEET_ID_${tab.toUpperCase()}`];
+  if (!sheetId && tab === 'social') sheetId = SOCIAL_SHEET_ID;
   if (!sheetId) return null;
 
   // std reads two worksheets (BAU + JLV) from the same spreadsheet, so it
@@ -58,7 +60,8 @@ export function getSheetConfig(tab) {
   if (staticConfig.fetchAllWorksheets) {
     return { id: tab, sheetId, ...staticConfig };
   }
-  const gid = process.env[`SHEET_GID_${tab.toUpperCase()}`] ?? '0';
+  const gid = process.env[`SHEET_GID_${tab.toUpperCase()}`]
+    ?? (tab === 'social' ? SOCIAL_SHEET_GID : '0');
   return { id: tab, sheetId, gid, ...staticConfig };
 }
 

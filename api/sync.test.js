@@ -91,8 +91,8 @@ describe('/api/sync per-sheet loop', () => {
     fetchSheet.mockResolvedValue([{ a: 1 }]);
     const { req, res } = mockReqRes({ headers: { 'x-sync-secret': 'shhh' } });
     await handler(req, res);
-    expect(fetchSheet).toHaveBeenCalledTimes(1);
-    expect(res.body.perSheet).toEqual({ design: 'ok' });
+    expect(fetchSheet).toHaveBeenCalledTimes(2);
+    expect(res.body.perSheet).toEqual({ design: 'ok', social: 'ok' });
   });
 
   it('continues syncing other sheets when one fails', async () => {
@@ -103,7 +103,7 @@ describe('/api/sync per-sheet loop', () => {
     });
     const { req, res } = mockReqRes({ headers: { 'x-sync-secret': 'shhh' } });
     await handler(req, res);
-    expect(res.body.perSheet).toEqual({ design: 'ok', process: 'failed' });
+    expect(res.body.perSheet).toEqual({ design: 'ok', social: 'ok', process: 'failed' });
     expect(res.body.errors).toContainEqual(
       expect.objectContaining({ sheet: 'process', message: expect.stringMatching(/parser missing/) })
     );

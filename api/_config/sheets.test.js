@@ -1,6 +1,7 @@
 // @vitest-environment node
 import { describe, it, expect, beforeEach } from 'vitest';
 import { getSheetConfig, getConfiguredTabs, isTabConfigured, ALL_TABS } from './sheets.js';
+import { SOCIAL_SHEET_ID } from '../../src/shared/socialSheetDefaults.js';
 
 describe('sheet config registry', () => {
   beforeEach(() => {
@@ -62,7 +63,20 @@ describe('sheet config registry', () => {
   it('getConfiguredTabs returns only tabs with sheet IDs set', () => {
     process.env.SHEET_ID_DESIGN = 'a';
     process.env.SHEET_ID_PROCESS = 'b';
-    expect(getConfiguredTabs().sort()).toEqual(['design', 'process']);
+    expect(getConfiguredTabs().sort()).toEqual(['design', 'process', 'social']);
+  });
+
+  it('social is configured without env vars via built-in public sheet defaults', () => {
+    expect(isTabConfigured('social')).toBe(true);
+    expect(getSheetConfig('social')).toMatchObject({
+      id: 'social',
+      sheetId: SOCIAL_SHEET_ID,
+      gid: '0',
+      mode: 'public',
+      parser: 'tabular',
+      range: 'A2:H',
+      headersRow: true,
+    });
   });
 
   it('std requires SHEET_ID_STD plus BOTH SHEET_GID_STD_BAU and SHEET_GID_STD_JLV', () => {

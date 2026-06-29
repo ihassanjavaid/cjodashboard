@@ -4,6 +4,7 @@ import { mapRowToSchema } from '../shared/schemaMapper.js';
 import { designSchema, stdSchema, strategySchema, socialSchema } from '../shared/sheetSchemas.js';
 import { parseProcessSheet } from '../shared/parseProcessSheet.js';
 import { SHEET_FETCH_OVERRIDES } from '../shared/sheetFetchOverrides.js';
+import { SOCIAL_SHEET_ID, SOCIAL_SHEET_GID } from '../shared/socialSheetDefaults.js';
 
 const SCHEMA_BY_TAB = {
   design:   designSchema,
@@ -23,6 +24,17 @@ function getDirectSheetConfig(tab) {
   // browser without heavy client-side OAuth state. Force design through
   // /api/data so the backend's multi-worksheet concatenation is preserved.
   if (tab === 'design') return null;
+
+  // Social sheet is public — always fetch directly in the browser so the tab
+  // works without waiting for a server sync or env-var setup.
+  if (tab === 'social') {
+    return {
+      sheetId: import.meta.env.VITE_SHEET_ID_SOCIAL || SOCIAL_SHEET_ID,
+      gid: import.meta.env.VITE_SHEET_GID_SOCIAL || SOCIAL_SHEET_GID,
+      ...SHEET_FETCH_OVERRIDES.social,
+    };
+  }
+
   const sheetId = import.meta.env[`VITE_SHEET_ID_${tab.toUpperCase()}`];
   if (!sheetId) return null;
   const gid = import.meta.env[`VITE_SHEET_GID_${tab.toUpperCase()}`] ?? '0';
