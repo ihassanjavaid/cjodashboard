@@ -19,6 +19,7 @@ const TAT_BUCKET_ORDER = [
 ];
 const TAT_MONTHS  = ['Jan', 'Feb', 'Mar', 'Apr', 'YTD'];
 const PROD_MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'YTD'];
+const TAT_ALL_TEAMS = 'All';
 
 function usePersistentToggle(key, initial) {
   const [value, setValue] = useState(() => {
@@ -52,13 +53,23 @@ export function ProcessView({ syncTick, search }) {
   const prodShown = useMemo(() => prod.filter((r) => rowMatchesSearch(r, ['teamMember', 'month'], query)), [prod, query]);
 
   const tatTeams = useMemo(() => [...new Set(tatShown.map((r) => r.team))], [tatShown]);
-  const effectiveTatTeam = (tatTeam && tatTeams.includes(tatTeam)) ? tatTeam : (tatTeams[0] || '');
+  const tatTeamOptions = useMemo(
+    () => (tatTeams.length ? [TAT_ALL_TEAMS, ...tatTeams] : ['—']),
+    [tatTeams],
+  );
+  const effectiveTatTeam = (tatTeam && tatTeamOptions.includes(tatTeam))
+    ? tatTeam
+    : (tatTeams.length ? TAT_ALL_TEAMS : '');
 
   const tatRows = useMemo(() => {
-    const teamRows = tatShown.filter((r) => r.team === effectiveTatTeam);
+    const teamRows = effectiveTatTeam === TAT_ALL_TEAMS
+      ? tatShown
+      : tatShown.filter((r) => r.team === effectiveTatTeam);
     return TAT_BUCKET_ORDER.map((bucket) => {
       const byMonth = Object.fromEntries(TAT_MONTHS.map((m) => [m, 0]));
-      teamRows.filter((r) => r.bucket === bucket).forEach((r) => { byMonth[r.month] = r.value; });
+      teamRows.filter((r) => r.bucket === bucket).forEach((r) => {
+        byMonth[r.month] += r.value || 0;
+      });
       return { bucket, ...byMonth };
     }).filter((row) => TAT_MONTHS.some((m) => row[m] > 0));
   }, [tatShown, effectiveTatTeam]);
@@ -206,7 +217,7 @@ export function ProcessView({ syncTick, search }) {
             <span style={{ display: 'inline-flex', gap: 8, alignItems: 'center' }}>
               <Filter
                 value={effectiveTatTeam}
-                options={tatTeams.length ? tatTeams : ['—']}
+                options={tatTeamOptions}
                 onChange={setTatTeam}
               />
               <ViewToggle value={tatView} onChange={setTatView} />
