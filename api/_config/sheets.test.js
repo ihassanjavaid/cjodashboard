@@ -8,16 +8,18 @@ describe('sheet config registry', () => {
     delete process.env.SHEET_ID_STD;
     delete process.env.SHEET_ID_STRATEGY;
     delete process.env.SHEET_ID_PROCESS;
+    delete process.env.SHEET_ID_SOCIAL;
     delete process.env.SHEET_GID_DESIGN;
     delete process.env.SHEET_GID_STD;
     delete process.env.SHEET_GID_STRATEGY;
     delete process.env.SHEET_GID_PROCESS;
+    delete process.env.SHEET_GID_SOCIAL;
     delete process.env.SHEET_GID_STD_BAU;
     delete process.env.SHEET_GID_STD_JLV;
   });
 
-  it('lists all four canonical tab ids', () => {
-    expect(ALL_TABS).toEqual(['design', 'std', 'process', 'strategy']);
+  it('lists all five canonical tab ids', () => {
+    expect(ALL_TABS).toEqual(['design', 'std', 'process', 'strategy', 'social']);
   });
 
   it('returns null for an unknown tab id', () => {
@@ -75,6 +77,20 @@ describe('sheet config registry', () => {
       gids: { bau: '111', jlv: '222' },
       mode: 'auth',
       parser: 'tabular',
+    });
+  });
+
+  it('builds a social config with public tabular parser and CSV range override', () => {
+    process.env.SHEET_ID_SOCIAL = 'social-sheet';
+    process.env.SHEET_GID_SOCIAL = '12345';
+    expect(getSheetConfig('social')).toMatchObject({
+      id: 'social',
+      sheetId: 'social-sheet',
+      gid: '12345',
+      mode: 'public',
+      parser: 'tabular',
+      range: 'A2:H',
+      headersRow: true,
     });
   });
 });

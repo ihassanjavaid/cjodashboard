@@ -11,12 +11,14 @@ import { logout } from '../App.jsx';
 import { DesignView } from './tabs/DesignView.jsx';
 import { StandardizationView } from './tabs/StandardizationView.jsx';
 import { ProcessView } from './tabs/ProcessView.jsx';
+import { SocialView } from './tabs/SocialView.jsx';
 import { StrategyView } from './tabs/StrategyView.jsx';
 
 const TABS = [
   { id: 'design',   label: 'Design & Usability' },
   { id: 'std',      label: 'Product Optimization' },
   { id: 'process',  label: 'Process Innovation' },
+  { id: 'social',   label: 'JLV Social Media Footprint' },
   { id: 'strategy', label: 'Strategic Overview' },
 ];
 
@@ -73,7 +75,7 @@ export default function NewUI() {
   }, [periodFrom, periodTo, ALL_PERIODS]);
 
   const clearPeriod = () => { setPeriodFrom('All'); setPeriodTo('All'); };
-  const showPeriod = activeTab !== 'process';
+  const showPeriod = activeTab !== 'process' && activeTab !== 'social';
 
   return (
     <div className="nu">
@@ -103,6 +105,7 @@ export default function NewUI() {
           {activeTab === 'design'   && <DesignView   key="design"   globalPeriodRange={globalPeriodRange} syncTick={syncTick} search={search} />}
           {activeTab === 'std'      && <StandardizationView key="std" globalPeriodRange={globalPeriodRange} syncTick={syncTick} search={search} />}
           {activeTab === 'process'  && <ProcessView  key="process"  syncTick={syncTick} search={search} />}
+          {activeTab === 'social'   && <SocialView   key="social"   syncTick={syncTick} search={search} />}
           {activeTab === 'strategy' && <StrategyView key="strategy" syncTick={syncTick} search={search} />}
         </div>
       </div>
