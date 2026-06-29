@@ -71,6 +71,14 @@ export function ProcessView({ syncTick, search }) {
     return m;
   }, [tatRows]);
 
+  const tatTotals = useMemo(() => {
+    const totals = Object.fromEntries(TAT_MONTHS.map((m) => [m, 0]));
+    for (const row of tatRows) {
+      for (const month of TAT_MONTHS) totals[month] += row[month] || 0;
+    }
+    return totals;
+  }, [tatRows]);
+
   const tatChartData = useMemo(() => ['Jan', 'Feb', 'Mar', 'Apr'].map((month) => {
     const point = { month };
     for (const row of tatRows) point[row.bucket] = row[month];
@@ -231,6 +239,14 @@ export function ProcessView({ syncTick, search }) {
                       ))}
                     </tr>
                   ))}
+                  <tr className="nu-table__total">
+                    <td className="nu-strong">Total</td>
+                    {TAT_MONTHS.map((m) => (
+                      <td key={m} className="nu-num nu-strong" style={{ textAlign: 'right', fontWeight: 600 }}>
+                        {tatTotals[m].toLocaleString()}
+                      </td>
+                    ))}
+                  </tr>
                 </tbody>
               </table>
             </div>

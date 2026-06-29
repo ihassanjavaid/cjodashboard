@@ -106,6 +106,14 @@ export function ProcessTab({ syncTick }) {
     return m;
   }, [tatRows]);
 
+  const tatTotals = useMemo(() => {
+    const totals = Object.fromEntries(TAT_MONTHS.map(m => [m, 0]));
+    for (const row of tatRows) {
+      for (const month of TAT_MONTHS) totals[month] += row[month] || 0;
+    }
+    return totals;
+  }, [tatRows]);
+
   // Chart-form: x-axis = month (excl. YTD), grouped bars per bucket.
   const tatChartData = useMemo(() => {
     return ['Jan', 'Feb', 'Mar', 'Apr'].map(month => {
@@ -263,6 +271,19 @@ export function ProcessTab({ syncTick }) {
                       ))}
                     </tr>
                   ))}
+                  <tr style={{ background: '#F5F2F0' }}>
+                    <td style={{ ...td, fontWeight: 700, color: C.text }}>Total</td>
+                    {TAT_MONTHS.map(m => (
+                      <td key={m} style={{
+                        ...td,
+                        textAlign: 'right',
+                        fontWeight: 700,
+                        color: C.text,
+                      }}>
+                        {tatTotals[m].toLocaleString()}
+                      </td>
+                    ))}
+                  </tr>
                 </tbody>
               </table>
             </div>
