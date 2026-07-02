@@ -140,7 +140,7 @@ export function Sidebar({
           </div>
         )}
 
-        <div className="nu-nav__group">
+        {/* <div className="nu-nav__group">
           <span className="nu-nav__label">General</span>
           <span
             className="nu-nav__item"
@@ -152,7 +152,7 @@ export function Sidebar({
             <span>Diagnostics</span>
             <span className="nu-nav__badge">Disabled</span>
           </span>
-        </div>
+        </div> */}
 
         <div style={{ flex: 1 }} />
 
