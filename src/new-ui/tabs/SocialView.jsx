@@ -179,29 +179,29 @@ export function SocialView({ syncTick, search }) {
       <div className="nu-kpi-row">
         <div className="nu-rise" data-i="0">
           <KpiCard
-            label="Total applications"
+            label="Total Applications"
             value={shown.length}
-            sub={`${rows.length} in portfolio`}
+            sub={`${rows.length} in the portfolio`}
             filled
           />
         </div>
         <div className="nu-rise" data-i="1">
           <KpiCard
-            label="Total categories"
+            label="Total Categories"
             value={totalCategories}
-            sub="Distinct verticals"
+            sub="Distinct Verticals"
           />
         </div>
         <div className="nu-rise" data-i="2">
           <KpiCard
-            label="Total social following"
+            label="Total Social Following"
             value={totalSocialFollowing ? formatCompactMetric(totalSocialFollowing) : '—'}
-            sub="FB + IG + TikTok + LinkedIn"
+            sub="Facebook, Insta, TikTok & LinkedIn"
           />
         </div>
         <div className="nu-rise" data-i="3">
           <KpiCard
-            label="Top Play Store downloads"
+            label="Top Google Play Store Downloads"
             value={topPlay.value ? formatCompactMetric(topPlay.value) : '—'}
             sub={topPlay.application}
           />
@@ -210,7 +210,7 @@ export function SocialView({ syncTick, search }) {
 
       <div className="nu-grid nu-grid--full">
         <ChartFrame
-          title="JLV Portfolio Social Media Footprint"
+          title="JLV Portfolio | Social Media Footprint"
           caption={`${shown.length} of ${rows.length} applications`}
           action={(
             <Search
