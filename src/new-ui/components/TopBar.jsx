@@ -7,6 +7,7 @@ import { Search } from './Search.jsx';
 export function TopBar({
   search, onSearchChange,
   periodFrom, periodTo, periodOptions, onPeriodChange, onPeriodClear, showPeriod,
+  searchPlaceholder = 'Search projects, tasks, resources...',
 }) {
   const searchRef = useRef(null);
 
@@ -45,7 +46,7 @@ export function TopBar({
         value={search}
         onChange={onSearchChange}
         inputRef={searchRef}
-        placeholder="Search projects, tasks, resources..."
+        placeholder={searchPlaceholder}
       />
 
       <span className="nu-topbar__spacer" />

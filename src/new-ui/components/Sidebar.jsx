@@ -1,6 +1,6 @@
 // Sidebar — Jazz World logo, nav items with active stripe, sync card at bottom.
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { JW_LOGO } from '../../shared/dashboardKit.jsx';
 import { relativeTime } from '../lib/utils.js';
 
@@ -46,14 +46,74 @@ const ICONS = {
   ),
 };
 
-const TEAM_TAB_IDS = ['design', 'std', 'process', 'social'];
+const TEAM_TAB_IDS = ['design', 'std', 'process'];
+const MISC_TAB_IDS = ['social'];
 const OVERVIEW_TAB_IDS = ['strategy'];
 const DISABLED_TAB_IDS = ['strategy']; // temporarily disabled
 
+const NAV_GROUPS = [
+  { id: 'teams', label: 'Teams', tabIds: TEAM_TAB_IDS },
+  { id: 'misc', label: 'Miscellaneous', tabIds: MISC_TAB_IDS },
+  { id: 'overview', label: 'Overview', tabIds: OVERVIEW_TAB_IDS },
+];
+
+function NavGroup({ id, label, children, tabIds = [], activeTab }) {
+  const storageKey = `nu:nav:collapsed:${id}`;
+  const hasActiveChild = tabIds.includes(activeTab);
+  const [collapsed, setCollapsed] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    if (hasActiveChild) return false;
+    try {
+      const stored = window.localStorage.getItem(storageKey);
+      if (stored === '1') return true;
+      if (stored === '0') return false;
+    } catch { /* no-op */ }
+    return false;
+  });
+
+  useEffect(() => {
+    if (hasActiveChild) setCollapsed(false);
+  }, [hasActiveChild]);
+
+  const toggle = () => {
+    setCollapsed((open) => {
+      const next = !open;
+      try { window.localStorage.setItem(storageKey, next ? '1' : '0'); } catch { /* no-op */ }
+      return next;
+    });
+  };
+
+  return (
+    <div className="nu-nav__group" data-collapsed={collapsed}>
+      <button
+        type="button"
+        className="nu-nav__group-toggle"
+        onClick={toggle}
+        aria-expanded={!collapsed}
+      >
+        <span className="nu-nav__label">{label}</span>
+        <svg
+          className="nu-nav__group-chevron"
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M6 9l6 6 6-6" />
+        </svg>
+      </button>
+      <div className="nu-nav__group-body">{children}</div>
+    </div>
+  );
+}
+
 export function Sidebar({ tabs, activeTab, onChangeTab, lastSyncedAt, onSyncComplete, syncStatus, onLogout }) {
   const tabById = Object.fromEntries(tabs.map((t) => [t.id, t]));
-  const teamTabs     = TEAM_TAB_IDS.map((id) => tabById[id]).filter(Boolean);
-  const overviewTabs = OVERVIEW_TAB_IDS.map((id) => tabById[id]).filter(Boolean);
 
   const renderItem = (t) => {
     const disabled = DISABLED_TAB_IDS.includes(t.id);
@@ -90,26 +150,23 @@ export function Sidebar({ tabs, activeTab, onChangeTab, lastSyncedAt, onSyncComp
       </div>
 
       <nav className="nu-nav" aria-label="Primary">
-        <div className="nu-nav__group">
-          <span className="nu-nav__label">Teams</span>
-          {teamTabs.map(renderItem)}
-        </div>
+        {NAV_GROUPS.map((group) => {
+          const groupTabs = group.tabIds.map((id) => tabById[id]).filter(Boolean);
+          if (groupTabs.length === 0) return null;
+          return (
+            <NavGroup key={group.id} id={group.id} label={group.label} tabIds={group.tabIds} activeTab={activeTab}>
+              {groupTabs.map(renderItem)}
+            </NavGroup>
+          );
+        })}
 
-        {overviewTabs.length > 0 && (
-          <div className="nu-nav__group">
-            <span className="nu-nav__label">Overview</span>
-            {overviewTabs.map(renderItem)}
-          </div>
-        )}
-
-        <div className="nu-nav__group">
-  <span className="nu-nav__label">General</span>
-  <span className="nu-nav__item" data-disabled="true" aria-disabled="true" title="Disabled">
-    <span className="nu-nav__item-icon">{ICONS.diagnostics}</span>
-    <span>Diagnostics</span>
-    <span className="nu-nav__badge">Disabled</span>
-  </span>
-</div>
+        <NavGroup id="general" label="General">
+          <span className="nu-nav__item" data-disabled="true" aria-disabled="true" title="Disabled">
+            <span className="nu-nav__item-icon">{ICONS.diagnostics}</span>
+            <span>Diagnostics</span>
+            <span className="nu-nav__badge">Disabled</span>
+          </span>
+        </NavGroup>
 
         <div style={{ flex: 1 }} />
 

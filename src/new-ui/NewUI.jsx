@@ -18,7 +18,7 @@ const TABS = [
   { id: 'design',   label: 'Design & Usability' },
   { id: 'std',      label: 'Product Optimization' },
   { id: 'process',  label: 'Process Innovation' },
-  { id: 'social',   label: 'JLV Social Media Footprint' },
+  { id: 'social',   label: 'JLV Social Media' },
   { id: 'strategy', label: 'Strategic Overview' },
 ];
 
@@ -77,6 +77,10 @@ export default function NewUI() {
   const clearPeriod = () => { setPeriodFrom('All'); setPeriodTo('All'); };
   const showPeriod = activeTab !== 'process' && activeTab !== 'social';
 
+  const searchPlaceholder = activeTab === 'social'
+    ? 'Search applications, categories, platforms...'
+    : 'Search projects, tasks, resources...';
+
   return (
     <div className="nu">
       <div className="nu-shell">
@@ -100,6 +104,7 @@ export default function NewUI() {
             onPeriodChange={(f, t) => { setPeriodFrom(f); setPeriodTo(t); }}
             onPeriodClear={clearPeriod}
             showPeriod={showPeriod}
+            searchPlaceholder={searchPlaceholder}
           />
 
           {activeTab === 'design'   && <DesignView   key="design"   globalPeriodRange={globalPeriodRange} syncTick={syncTick} search={search} />}
