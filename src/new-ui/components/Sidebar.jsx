@@ -111,7 +111,11 @@ export function Sidebar({
   };
 
   return (
-    <aside className="nu-sidebar" data-collapsed={collapsed}>
+    <aside
+      className="nu-sidebar"
+      data-collapsed={collapsed}
+      style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, overflow: 'hidden' }}
+    >
       <div className="nu-brand">
         <img src={JW_LOGO} alt="Jazz World" className="nu-brand__logo" />
         <div className="nu-brand__name">
@@ -120,41 +124,51 @@ export function Sidebar({
         </div>
       </div>
 
-      <nav className="nu-nav" aria-label="Primary">
-        {overviewTabs.length > 0 && (
+      <nav className="nu-nav" aria-label="Primary" style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}>
+        <div
+          className="nu-nav__scroll"
+          style={{
+            flex: 1,
+            minHeight: 0,
+            overflowY: 'auto',
+            overflowX: 'hidden',
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
+          {overviewTabs.length > 0 && (
+            <div className="nu-nav__group">
+              <span className="nu-nav__label">Overview</span>
+              {overviewTabs.map(renderItem)}
+            </div>
+          )}
+
           <div className="nu-nav__group">
-            <span className="nu-nav__label">Overview</span>
-            {overviewTabs.map(renderItem)}
+            <span className="nu-nav__label">Teams</span>
+            {teamTabs.map(renderItem)}
           </div>
-        )}
 
-        <div className="nu-nav__group">
-          <span className="nu-nav__label">Teams</span>
-          {teamTabs.map(renderItem)}
-        </div>
+          {miscTabs.length > 0 && (
+            <div className="nu-nav__group">
+              <span className="nu-nav__label">Miscellaneous</span>
+              {miscTabs.map(renderItem)}
+            </div>
+          )}
 
-        {miscTabs.length > 0 && (
           <div className="nu-nav__group">
-            <span className="nu-nav__label">Miscellaneous</span>
-            {miscTabs.map(renderItem)}
+            <span className="nu-nav__label">General</span>
+            <span
+              className="nu-nav__item"
+              data-disabled="true"
+              aria-disabled="true"
+              title={collapsed ? 'Diagnostics (disabled)' : 'Disabled'}
+            >
+              <span className="nu-nav__item-icon">{ICONS.diagnostics}</span>
+              <span>Diagnostics</span>
+              <span className="nu-nav__badge">Disabled</span>
+            </span>
           </div>
-        )}
-
-        <div className="nu-nav__group">
-          <span className="nu-nav__label">General</span>
-          <span
-            className="nu-nav__item"
-            data-disabled="true"
-            aria-disabled="true"
-            title={collapsed ? 'Diagnostics (disabled)' : 'Disabled'}
-          >
-            <span className="nu-nav__item-icon">{ICONS.diagnostics}</span>
-            <span>Diagnostics</span>
-            <span className="nu-nav__badge">Disabled</span>
-          </span>
         </div>
-
-        <div style={{ flex: 1 }} />
 
         <SyncCard
           status={syncStatus}
