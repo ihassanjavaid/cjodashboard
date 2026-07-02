@@ -18,7 +18,7 @@ const TABS = [
   { id: 'design',   label: 'Design & Usability' },
   { id: 'std',      label: 'Product Optimization' },
   { id: 'process',  label: 'Process Innovation' },
-  { id: 'social',   label: 'JLV Social Media' },
+  { id: 'social',   label: 'Social Media Footprint' },
   { id: 'strategy', label: 'Strategic Overview' },
 ];
 
