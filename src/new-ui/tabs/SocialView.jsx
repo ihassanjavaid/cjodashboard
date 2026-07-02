@@ -3,7 +3,7 @@
 import { useMemo, useState } from 'react';
 import { useDashboardDataWithFallback } from '../../hooks/useDashboardDataWithFallback.js';
 import { KpiCard } from '../components/KpiCard.jsx';
-import { Pill, StaleBanner } from '../components/primitives.jsx';
+import { StaleBanner } from '../components/primitives.jsx';
 import { ChartFrame } from '../components/ChartFrame.jsx';
 import { Search } from '../components/Search.jsx';
 import {
@@ -16,17 +16,18 @@ import {
 
 const FALLBACK = [];
 
-const METRIC_KEYS = ['facebook', 'instagram', 'tiktok', 'linkedin', 'playReviews', 'playDownloads'];
+const SOCIAL_FOLLOW_KEYS = ['facebook', 'instagram', 'tiktok', 'linkedin'];
+const METRIC_KEYS = [...SOCIAL_FOLLOW_KEYS, 'playReviews', 'playDownloads'];
 
 const COLUMNS = [
-  { key: 'application',   label: 'Application', heat: false },
-  { key: 'category',      label: 'Category', heat: false, pill: true },
-  { key: 'facebook',      label: 'Facebook Followers', heat: true },
-  { key: 'instagram',     label: 'Instagram Followers', heat: true },
-  { key: 'tiktok',        label: 'TikTok Followers', heat: true },
-  { key: 'linkedin',      label: 'LinkedIn Followers', heat: true },
-  { key: 'playReviews',   label: 'Google Play Store Reviews', heat: true },
-  { key: 'playDownloads', label: 'Google Play Store Downloads', heat: true, emphasize: true },
+  { key: 'application',   label: 'Application', sortable: true },
+  { key: 'category',      label: 'Category', sortable: true },
+  { key: 'facebook',      label: 'Facebook Followers', sortable: true, heat: true },
+  { key: 'instagram',     label: 'Instagram Followers', sortable: true, heat: true },
+  { key: 'tiktok',        label: 'TikTok Followers', sortable: true, heat: true },
+  { key: 'linkedin',      label: 'LinkedIn Followers', sortable: true, heat: true },
+  { key: 'playReviews',   label: 'Google Play Store Reviews', sortable: true, heat: true },
+  { key: 'playDownloads', label: 'Google Play Store Downloads', sortable: true, heat: true, emphasize: true },
 ];
 
 const SEARCH_FIELDS = COLUMNS.map((c) => c.key);
@@ -44,15 +45,84 @@ function matchesCombinedSearch(row, globalSearch, tableSearch) {
   return true;
 }
 
+function sortValue(row, key) {
+  if (METRIC_KEYS.includes(key)) return parseCompactMetric(row[key]);
+  return String(row[key] ?? '').toLowerCase();
+}
+
+function SortIcon({ active, dir }) {
+  return (
+    <svg
+      className="nu-table__sort-icon"
+      data-active={active}
+      data-dir={dir}
+      width="12"
+      height="12"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M8 9l4-4 4 4" />
+      <path d="M8 15l4 4 4-4" />
+    </svg>
+  );
+}
+
+function SortableTh({ col, sortKey, sortDir, onSort }) {
+  const active = sortKey === col.key;
+  const align = col.heat ? 'right' : 'left';
+  return (
+    <th style={{ textAlign: align, color: col.emphasize ? 'var(--nu-ink)' : undefined }}>
+      <button
+        type="button"
+        className="nu-table__sort"
+        data-align={align}
+        onClick={() => onSort(col.key)}
+        aria-sort={active ? (sortDir === 'asc' ? 'ascending' : 'descending') : 'none'}
+      >
+        <span>{col.label}</span>
+        <SortIcon active={active} dir={sortDir} />
+      </button>
+    </th>
+  );
+}
+
 export function SocialView({ syncTick, search }) {
   const { rows: liveRows, sheetStatus } = useDashboardDataWithFallback('social', FALLBACK, syncTick);
   const rows = liveRows ?? FALLBACK;
   const [tableSearch, setTableSearch] = useState('');
+  const [sortKey, setSortKey] = useState('application');
+  const [sortDir, setSortDir] = useState('asc');
 
-  const shown = useMemo(
+  const filtered = useMemo(
     () => rows.filter((r) => matchesCombinedSearch(r, search, tableSearch)),
     [rows, search, tableSearch],
   );
+
+  const shown = useMemo(() => {
+    const copy = [...filtered];
+    copy.sort((a, b) => {
+      const av = sortValue(a, sortKey);
+      const bv = sortValue(b, sortKey);
+      if (av < bv) return sortDir === 'asc' ? -1 : 1;
+      if (av > bv) return sortDir === 'asc' ? 1 : -1;
+      return 0;
+    });
+    return copy;
+  }, [filtered, sortKey, sortDir]);
+
+  const handleSort = (key) => {
+    if (sortKey === key) {
+      setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'));
+    } else {
+      setSortKey(key);
+      setSortDir(METRIC_KEYS.includes(key) ? 'desc' : 'asc');
+    }
+  };
 
   const columnMax = useMemo(() => {
     const max = Object.fromEntries(METRIC_KEYS.map((k) => [k, 0]));
@@ -73,18 +143,17 @@ export function SocialView({ syncTick, search }) {
     return out;
   }, [shown]);
 
-  const categories = useMemo(
+  const totalCategories = useMemo(
     () => new Set(shown.map((r) => r.category).filter(Boolean)).size,
     [shown],
   );
 
-  const topTikTok = useMemo(() => {
-    let best = { application: '—', value: 0 };
+  const totalSocialFollowing = useMemo(() => {
+    let sum = 0;
     for (const row of shown) {
-      const n = parseCompactMetric(row.tiktok);
-      if (n > best.value) best = { application: row.application || '—', value: n };
+      for (const key of SOCIAL_FOLLOW_KEYS) sum += parseCompactMetric(row[key]);
     }
-    return best;
+    return sum;
   }, [shown]);
 
   const topPlay = useMemo(() => {
@@ -110,25 +179,29 @@ export function SocialView({ syncTick, search }) {
       <div className="nu-kpi-row">
         <div className="nu-rise" data-i="0">
           <KpiCard
-            label="Applications"
+            label="Total applications"
             value={shown.length}
             sub={`${rows.length} in portfolio`}
             filled
           />
         </div>
         <div className="nu-rise" data-i="1">
-          <KpiCard label="Categories" value={categories} sub="Distinct verticals" />
+          <KpiCard
+            label="Total categories"
+            value={totalCategories}
+            sub="Distinct verticals"
+          />
         </div>
         <div className="nu-rise" data-i="2">
           <KpiCard
-            label="Top TikTok reach"
-            value={topTikTok.value ? formatCompactMetric(topTikTok.value) : '—'}
-            sub={topTikTok.application}
+            label="Total social following"
+            value={totalSocialFollowing ? formatCompactMetric(totalSocialFollowing) : '—'}
+            sub="FB + IG + TikTok + LinkedIn"
           />
         </div>
         <div className="nu-rise" data-i="3">
           <KpiCard
-            label="Top Play downloads"
+            label="Top Play Store downloads"
             value={topPlay.value ? formatCompactMetric(topPlay.value) : '—'}
             sub={topPlay.application}
           />
@@ -152,19 +225,17 @@ export function SocialView({ syncTick, search }) {
           empty={shown.length === 0}
         >
           <div className="nu-table-wrap">
-            <table className="nu-table" style={{ minWidth: 1080 }}>
+            <table className="nu-table nu-table--sortable" style={{ minWidth: 1080 }}>
               <thead>
                 <tr>
                   {COLUMNS.map((col) => (
-                    <th
+                    <SortableTh
                       key={col.key}
-                      style={{
-                        textAlign: col.heat ? 'right' : 'left',
-                        color: col.emphasize ? 'var(--nu-ink)' : undefined,
-                      }}
-                    >
-                      {col.label}
-                    </th>
+                      col={col}
+                      sortKey={sortKey}
+                      sortDir={sortDir}
+                      onSort={handleSort}
+                    />
                   ))}
                 </tr>
               </thead>
@@ -174,10 +245,10 @@ export function SocialView({ syncTick, search }) {
                     {COLUMNS.map((col) => {
                       const raw = cellValue(row[col.key]);
                       const numeric = col.heat ? parseCompactMetric(row[col.key]) : 0;
-                      if (col.pill) {
+                      if (col.key === 'category') {
                         return (
-                          <td key={col.key} className="nu-mute">
-                            <Pill tone="accent">{raw}</Pill>
+                          <td key={col.key}>
+                            <span className="nu-social-cat" title={raw}>{raw}</span>
                           </td>
                         );
                       }
