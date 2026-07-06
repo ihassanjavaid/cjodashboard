@@ -4,7 +4,6 @@ import { JW_LOGO, C } from './shared/dashboardKit.jsx';
 import { StandardizationTab } from './tabs/StandardizationTab.jsx';
 import { StrategyTab } from './tabs/StrategyTab.jsx';
 import { ProcessTab } from './tabs/ProcessTab.jsx';
-import { SocialTab } from './tabs/SocialTab.jsx';
 import { SyncButton } from './components/SyncButton.jsx';
 import { Diagnostics } from './pages/Diagnostics.jsx';
 import NewUI from './new-ui/NewUI.jsx';
@@ -17,7 +16,6 @@ const TABS = [
   { id: "design", label: "Design & Usability" },
   { id: "std", label: "Product Optimization" },
   { id: "process", label: "Process Innovation" },
-  { id: "social", label: "JLV Social Media Footprint" },
   { id: "strategy", label: "Strategic Overview" },
 ];
 
@@ -102,7 +100,7 @@ export default function CJODashboard() {
     setSyncTick(t => t + 1);
   }, []);
 
-  const showMonthFilter = activeTab !== "process" && activeTab !== "social";
+  const showMonthFilter = activeTab !== "process";
 
   // Use months derived from live data; fall back to the calendar order so the
   // filter still works while the initial fetch is in flight.
@@ -202,7 +200,6 @@ export default function CJODashboard() {
         {activeTab === "design"  && <DesignTab globalMonthRange={globalMonthRange} syncTick={syncTick} />}
         {activeTab === "std"     && <StandardizationTab globalMonthRange={globalMonthRange} syncTick={syncTick} />}
         {activeTab === "process"  && <ProcessTab syncTick={syncTick} />}
-        {activeTab === "social"   && <SocialTab syncTick={syncTick} />}
         {activeTab === "strategy" && <StrategyTab syncTick={syncTick} />}
       </div>
     </div>

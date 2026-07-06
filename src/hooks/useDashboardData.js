@@ -1,16 +1,13 @@
 import { useState, useEffect, useCallback } from 'react';
 import Papa from 'papaparse';
 import { mapRowToSchema } from '../shared/schemaMapper.js';
-import { designSchema, stdSchema, strategySchema, socialSchema } from '../shared/sheetSchemas.js';
+import { designSchema, stdSchema, strategySchema } from '../shared/sheetSchemas.js';
 import { parseProcessSheet } from '../shared/parseProcessSheet.js';
-import { SHEET_FETCH_OVERRIDES } from '../shared/sheetFetchOverrides.js';
-import { SOCIAL_SHEET_ID, SOCIAL_SHEET_GID } from '../shared/socialSheetDefaults.js';
 
 const SCHEMA_BY_TAB = {
   design:   designSchema,
   std:      stdSchema,
   strategy: strategySchema,
-  social:   socialSchema,
   // process uses the block-detection parser, not a tabular schema — see fetchPublicCsvFromBrowser.
 };
 
@@ -24,34 +21,17 @@ function getDirectSheetConfig(tab) {
   // browser without heavy client-side OAuth state. Force design through
   // /api/data so the backend's multi-worksheet concatenation is preserved.
   if (tab === 'design') return null;
-
-  // Social sheet is public — always fetch directly in the browser so the tab
-  // works without waiting for a server sync or env-var setup.
-  if (tab === 'social') {
-    return {
-      sheetId: import.meta.env.VITE_SHEET_ID_SOCIAL || SOCIAL_SHEET_ID,
-      gid: import.meta.env.VITE_SHEET_GID_SOCIAL || SOCIAL_SHEET_GID,
-      ...SHEET_FETCH_OVERRIDES.social,
-    };
-  }
-
   const sheetId = import.meta.env[`VITE_SHEET_ID_${tab.toUpperCase()}`];
   if (!sheetId) return null;
   const gid = import.meta.env[`VITE_SHEET_GID_${tab.toUpperCase()}`] ?? '0';
-  return { sheetId, gid, ...SHEET_FETCH_OVERRIDES[tab] };
+  return { sheetId, gid };
 }
 
-function buildPublicCsvUrl({ sheetId, gid, range, headersRow }) {
-  const params = new URLSearchParams({ tqx: 'out:csv', gid: String(gid) });
-  if (range) {
-    params.set('range', range);
-    if (headersRow) params.set('headers', '1');
-  }
-  return `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?${params}`;
-}
-
-async function fetchPublicCsvFromBrowser({ sheetId, gid, range, headersRow }, tab, schema) {
-  const url = buildPublicCsvUrl({ sheetId, gid, range, headersRow });
+async function fetchPublicCsvFromBrowser({ sheetId, gid }, tab, schema) {
+  // gviz endpoint works for any "Anyone with the link can view" sheet without
+  // requiring File → Publish to web. The /export?format=csv endpoint 400s on
+  // sheets that aren't explicitly published.
+  const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&gid=${gid}`;
   const res = await fetch(url);
   if (!res.ok) throw new Error(`Sheet fetch failed: ${res.status}`);
   const text = await res.text();
