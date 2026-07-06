@@ -14,7 +14,6 @@ A live dashboard for the Customer Journey Operations team, fed by three Google S
 | **Design & Usability** | Design sheet (one worksheet per month) | Research, usability, survey, sentiment, and pulse tasks per resource and month. |
 | **Standardization** | Std sheet (BAU + JLV worksheets) | UAT activity, pass/fail rates, manned-hour load, raised-vs-fixed issues. |
 | **Process Team** | Process sheet | Channel distribution, BVS coverage, TAT distribution, productivity (new vs revamp). |
-| **JLV Social Media Footprint** | Social sheet | Portfolio social reach across Facebook, Instagram, TikTok, LinkedIn, and Google Play. |
 | **Strategic Overview** | Cross-team rollup | Aggregated view across all three streams. |
 
 ---
@@ -71,9 +70,7 @@ The free tier is sufficient.
 | `SHEET_ID_DESIGN`, `SHEET_GID_DESIGN` | Design & Usability sheet (auth-mode, multi-worksheet) |
 | `SHEET_ID_STD`, `SHEET_GID_STD_BAU`, `SHEET_GID_STD_JLV` | Standardization sheet (BAU + JLV worksheets) |
 | `SHEET_ID_PROCESS`, `SHEET_GID_PROCESS` | Process sheet (public, multi-block parser) |
-| `SHEET_ID_SOCIAL`, `SHEET_GID_SOCIAL` | JLV Social Media Footprint sheet (public, tabular). Defaults to the built-in Jazz Lifestyles sheet if unset. |
 | `VITE_SHEET_ID_PROCESS`, `VITE_SHEET_GID_PROCESS` | Browser-side direct fetch for the Process tab |
-| `VITE_SHEET_ID_SOCIAL`, `VITE_SHEET_GID_SOCIAL` | Optional browser-side overrides for the Social tab direct-fetch |
 | `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_REFRESH_TOKEN` | OAuth for Sheets API (regenerate with `npm run auth` if revoked) |
 | `KV_REST_API_URL`, `KV_REST_API_TOKEN`, `KV_REST_API_READ_ONLY_TOKEN`, `KV_URL`, `REDIS_URL` | Upstash Redis instance (provisioned via Vercel Marketplace) |
 | `SYNC_SECRET` | Authorizes external sync triggers (`/api/sync` direct calls) |

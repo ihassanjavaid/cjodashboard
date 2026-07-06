@@ -19,7 +19,6 @@ const TAT_BUCKET_ORDER = [
 ];
 const TAT_MONTHS  = ['Jan', 'Feb', 'Mar', 'Apr', 'YTD'];
 const PROD_MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'YTD'];
-const TAT_ALL_TEAMS = 'All';
 
 function usePersistentToggle(key, initial) {
   const [value, setValue] = useState(() => {
@@ -53,23 +52,13 @@ export function ProcessView({ syncTick, search }) {
   const prodShown = useMemo(() => prod.filter((r) => rowMatchesSearch(r, ['teamMember', 'month'], query)), [prod, query]);
 
   const tatTeams = useMemo(() => [...new Set(tatShown.map((r) => r.team))], [tatShown]);
-  const tatTeamOptions = useMemo(
-    () => (tatTeams.length ? [TAT_ALL_TEAMS, ...tatTeams] : ['—']),
-    [tatTeams],
-  );
-  const effectiveTatTeam = (tatTeam && tatTeamOptions.includes(tatTeam))
-    ? tatTeam
-    : (tatTeams.length ? TAT_ALL_TEAMS : '');
+  const effectiveTatTeam = (tatTeam && tatTeams.includes(tatTeam)) ? tatTeam : (tatTeams[0] || '');
 
   const tatRows = useMemo(() => {
-    const teamRows = effectiveTatTeam === TAT_ALL_TEAMS
-      ? tatShown
-      : tatShown.filter((r) => r.team === effectiveTatTeam);
+    const teamRows = tatShown.filter((r) => r.team === effectiveTatTeam);
     return TAT_BUCKET_ORDER.map((bucket) => {
       const byMonth = Object.fromEntries(TAT_MONTHS.map((m) => [m, 0]));
-      teamRows.filter((r) => r.bucket === bucket).forEach((r) => {
-        byMonth[r.month] += r.value || 0;
-      });
+      teamRows.filter((r) => r.bucket === bucket).forEach((r) => { byMonth[r.month] = r.value; });
       return { bucket, ...byMonth };
     }).filter((row) => TAT_MONTHS.some((m) => row[m] > 0));
   }, [tatShown, effectiveTatTeam]);
@@ -80,14 +69,6 @@ export function ProcessView({ syncTick, search }) {
       for (const month of TAT_MONTHS) if (row[month] > m) m = row[month];
     }
     return m;
-  }, [tatRows]);
-
-  const tatTotals = useMemo(() => {
-    const totals = Object.fromEntries(TAT_MONTHS.map((m) => [m, 0]));
-    for (const row of tatRows) {
-      for (const month of TAT_MONTHS) totals[month] += row[month] || 0;
-    }
-    return totals;
   }, [tatRows]);
 
   const tatChartData = useMemo(() => ['Jan', 'Feb', 'Mar', 'Apr'].map((month) => {
@@ -217,7 +198,7 @@ export function ProcessView({ syncTick, search }) {
             <span style={{ display: 'inline-flex', gap: 8, alignItems: 'center' }}>
               <Filter
                 value={effectiveTatTeam}
-                options={tatTeamOptions}
+                options={tatTeams.length ? tatTeams : ['—']}
                 onChange={setTatTeam}
               />
               <ViewToggle value={tatView} onChange={setTatView} />
@@ -250,14 +231,6 @@ export function ProcessView({ syncTick, search }) {
                       ))}
                     </tr>
                   ))}
-                  <tr className="nu-table__total">
-                    <td className="nu-strong">Total</td>
-                    {TAT_MONTHS.map((m) => (
-                      <td key={m} className="nu-num nu-strong" style={{ textAlign: 'right', fontWeight: 600 }}>
-                        {tatTotals[m].toLocaleString()}
-                      </td>
-                    ))}
-                  </tr>
                 </tbody>
               </table>
             </div>
