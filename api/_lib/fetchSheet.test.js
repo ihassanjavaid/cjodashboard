@@ -59,6 +59,17 @@ describe('fetchPublicCsv', () => {
     await fetchPublicCsv({ sheetId: 'X' });
     expect(fetch.mock.calls[0][0]).toContain('gid=0');
   });
+
+  it('adds range and headers params when configured', async () => {
+    fetch.mockResolvedValueOnce({
+      ok: true,
+      text: async () => 'Application,Category\nROX,Telco',
+    });
+    await fetchPublicCsv({ sheetId: 'X', gid: '99', range: 'A2:H', headersRow: true });
+    expect(fetch.mock.calls[0][0]).toBe(
+      'https://docs.google.com/spreadsheets/d/X/gviz/tq?tqx=out:csv&gid=99&range=A2%3AH&headers=1',
+    );
+  });
 });
 
 describe('fetchSheet dispatch', () => {
