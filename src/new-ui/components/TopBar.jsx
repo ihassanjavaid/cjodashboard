@@ -7,7 +7,7 @@ import { Search } from './Search.jsx';
 export function TopBar({
   search, onSearchChange,
   periodFrom, periodTo, periodOptions, onPeriodChange, onPeriodClear, showPeriod,
-  searchPlaceholder = 'Search projects, tasks, resources...',
+  searchPlaceholder = 'Search teams, projects, tasks, resources...',
 }) {
   const searchRef = useRef(null);
 
