@@ -1,7 +1,6 @@
 // @vitest-environment node
 import { describe, it, expect, beforeEach } from 'vitest';
 import { getSheetConfig, getConfiguredTabs, isTabConfigured, ALL_TABS } from './sheets.js';
-import { SOCIAL_SHEET_ID } from '../../src/shared/socialSheetDefaults.js';
 
 describe('sheet config registry', () => {
   beforeEach(() => {
@@ -9,18 +8,16 @@ describe('sheet config registry', () => {
     delete process.env.SHEET_ID_STD;
     delete process.env.SHEET_ID_STRATEGY;
     delete process.env.SHEET_ID_PROCESS;
-    delete process.env.SHEET_ID_SOCIAL;
     delete process.env.SHEET_GID_DESIGN;
     delete process.env.SHEET_GID_STD;
     delete process.env.SHEET_GID_STRATEGY;
     delete process.env.SHEET_GID_PROCESS;
-    delete process.env.SHEET_GID_SOCIAL;
     delete process.env.SHEET_GID_STD_BAU;
     delete process.env.SHEET_GID_STD_JLV;
   });
 
-  it('lists all five canonical tab ids', () => {
-    expect(ALL_TABS).toEqual(['design', 'std', 'process', 'strategy', 'social']);
+  it('lists all four canonical tab ids', () => {
+    expect(ALL_TABS).toEqual(['design', 'std', 'process', 'strategy']);
   });
 
   it('returns null for an unknown tab id', () => {
@@ -63,20 +60,7 @@ describe('sheet config registry', () => {
   it('getConfiguredTabs returns only tabs with sheet IDs set', () => {
     process.env.SHEET_ID_DESIGN = 'a';
     process.env.SHEET_ID_PROCESS = 'b';
-    expect(getConfiguredTabs().sort()).toEqual(['design', 'process', 'social']);
-  });
-
-  it('social is configured without env vars via built-in public sheet defaults', () => {
-    expect(isTabConfigured('social')).toBe(true);
-    expect(getSheetConfig('social')).toMatchObject({
-      id: 'social',
-      sheetId: SOCIAL_SHEET_ID,
-      gid: '0',
-      mode: 'public',
-      parser: 'tabular',
-      range: 'A2:H',
-      headersRow: true,
-    });
+    expect(getConfiguredTabs().sort()).toEqual(['design', 'process']);
   });
 
   it('std requires SHEET_ID_STD plus BOTH SHEET_GID_STD_BAU and SHEET_GID_STD_JLV', () => {
@@ -91,20 +75,6 @@ describe('sheet config registry', () => {
       gids: { bau: '111', jlv: '222' },
       mode: 'auth',
       parser: 'tabular',
-    });
-  });
-
-  it('builds a social config with public tabular parser and CSV range override', () => {
-    process.env.SHEET_ID_SOCIAL = 'social-sheet';
-    process.env.SHEET_GID_SOCIAL = '12345';
-    expect(getSheetConfig('social')).toMatchObject({
-      id: 'social',
-      sheetId: 'social-sheet',
-      gid: '12345',
-      mode: 'public',
-      parser: 'tabular',
-      range: 'A2:H',
-      headersRow: true,
     });
   });
 });

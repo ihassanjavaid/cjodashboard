@@ -3,17 +3,8 @@ import { parseCsv } from './csv.js';
 import { mapRowToSchema } from './schema.js';
 import { parseProcessSheet } from '../../src/shared/parseProcessSheet.js';
 
-function buildPublicCsvUrl({ sheetId, gid = '0', range, headersRow }) {
-  const params = new URLSearchParams({ tqx: 'out:csv', gid: String(gid) });
-  if (range) {
-    params.set('range', range);
-    if (headersRow) params.set('headers', '1');
-  }
-  return `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?${params}`;
-}
-
-export async function fetchPublicCsv({ sheetId, gid = '0', range, headersRow }) {
-  const url = buildPublicCsvUrl({ sheetId, gid, range, headersRow });
+export async function fetchPublicCsv({ sheetId, gid = '0' }) {
+  const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&gid=${gid}`;
   const res = await fetch(url, { redirect: 'follow' });
   if (!res.ok) throw new Error(`Sheet fetch failed: ${res.status}`);
   return parseCsv(await res.text());
@@ -22,8 +13,8 @@ export async function fetchPublicCsv({ sheetId, gid = '0', range, headersRow }) 
 // Process-blocks parser needs the raw CSV text (the rows aren't tabular —
 // they're a stacked union of headers + data blocks), so we re-fetch as text
 // rather than feeding it parsed objects.
-export async function fetchPublicCsvText({ sheetId, gid = '0', range, headersRow }) {
-  const url = buildPublicCsvUrl({ sheetId, gid, range, headersRow });
+export async function fetchPublicCsvText({ sheetId, gid = '0' }) {
+  const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&gid=${gid}`;
   const res = await fetch(url, { redirect: 'follow' });
   if (!res.ok) throw new Error(`Sheet fetch failed: ${res.status}`);
   return res.text();
@@ -160,12 +151,7 @@ export async function fetchSheet(config) {
   }
 
   const raw = config.mode === 'public'
-    ? await fetchPublicCsv({
-      sheetId: config.sheetId,
-      gid: config.gid,
-      range: config.range,
-      headersRow: config.headersRow,
-    })
+    ? await fetchPublicCsv(config)
     : await fetchAuthSheet(config);
 
   if (config.parser === 'tabular') {

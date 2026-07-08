@@ -1,8 +1,6 @@
-import { designSchema, stdSchema, strategySchema, bauSchema, jlvSchema, socialSchema } from './schemas.js';
-import { SHEET_FETCH_OVERRIDES } from '../../src/shared/sheetFetchOverrides.js';
-import { SOCIAL_SHEET_ID, SOCIAL_SHEET_GID } from '../../src/shared/socialSheetDefaults.js';
+import { designSchema, stdSchema, strategySchema, bauSchema, jlvSchema } from './schemas.js';
 
-export const ALL_TABS = ['design', 'std', 'process', 'strategy', 'social'];
+export const ALL_TABS = ['design', 'std', 'process', 'strategy'];
 
 const STATIC_PER_TAB = {
   // Design pulls from a sheet with one worksheet per month (December, January,
@@ -22,13 +20,11 @@ const STATIC_PER_TAB = {
   process:  { mode: 'public', parser: 'process-blocks', schema: null },
   std:      { mode: 'auth',   parser: 'tabular',        schema: stdSchema },
   strategy: { mode: 'auth',   parser: 'tabular',        schema: strategySchema },
-  social:   { mode: 'public', parser: 'tabular', schema: socialSchema, ...SHEET_FETCH_OVERRIDES.social },
 };
 
 export function getSheetConfig(tab) {
   if (!ALL_TABS.includes(tab)) return null;
-  let sheetId = process.env[`SHEET_ID_${tab.toUpperCase()}`];
-  if (!sheetId && tab === 'social') sheetId = SOCIAL_SHEET_ID;
+  const sheetId = process.env[`SHEET_ID_${tab.toUpperCase()}`];
   if (!sheetId) return null;
 
   // std reads two worksheets (BAU + JLV) from the same spreadsheet, so it
@@ -60,8 +56,7 @@ export function getSheetConfig(tab) {
   if (staticConfig.fetchAllWorksheets) {
     return { id: tab, sheetId, ...staticConfig };
   }
-  const gid = process.env[`SHEET_GID_${tab.toUpperCase()}`]
-    ?? (tab === 'social' ? SOCIAL_SHEET_GID : '0');
+  const gid = process.env[`SHEET_GID_${tab.toUpperCase()}`] ?? '0';
   return { id: tab, sheetId, gid, ...staticConfig };
 }
 

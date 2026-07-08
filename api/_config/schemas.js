@@ -5,5 +5,4 @@ export {
   strategySchema,
   bauSchema,
   jlvSchema,
-  socialSchema,
 } from '../../src/shared/sheetSchemas.js';
