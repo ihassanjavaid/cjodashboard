@@ -7,9 +7,10 @@ export function Search({
   inputRef,
   id = 'nu-global-search',
   hint = 'Ctrl K',
+  className = '',
 }) {
   return (
-    <label className="nu-search" htmlFor={id}>
+    <label className={`nu-search ${className}`.trim()} htmlFor={id}>
       <span className="nu-search__icon" aria-hidden="true">
         <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <circle cx="11" cy="11" r="8" />
