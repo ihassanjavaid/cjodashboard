@@ -251,3 +251,16 @@ export const jlvSchema = {
 // api/_config/sheets.js.
 export const stdSchema = {};
 export const strategySchema = {};
+
+// JLV Social Media Footprint — row 1 is a merged title; headers live in row 2.
+// Public CSV fetch uses range=A2:H&headers=1 so ROX/SIMOSA/Tamasha aren't lost.
+export const socialSchema = {
+  application:   { column: 'Application',                 type: 'string' },
+  category:      { column: 'Category',                  type: 'string' },
+  facebook:      { column: 'Facebook Followers',        type: 'string' },
+  instagram:     { column: 'Instagram Followers',       type: 'string' },
+  tiktok:        { column: 'TikTok Followers',          type: 'string' },
+  linkedin:      { column: 'LinkedIn Followers',        type: 'string' },
+  playReviews:   { column: 'Google Play Store Reviews', type: 'string' },
+  playDownloads: { column: 'Google Play Store Downloads', type: 'string' },
+};
