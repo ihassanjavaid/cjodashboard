@@ -46,7 +46,7 @@ export function TopBar({
         value={search}
         onChange={onSearchChange}
         inputRef={searchRef}
-        placeholder="Search projects, tasks, resources..."
+        placeholder={searchPlaceholder}
       />
 
       <span className="nu-topbar__spacer" />

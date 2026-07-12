@@ -8,6 +8,8 @@ describe('useDashboardData', () => {
     // Force the API path (not the direct-fetch path) for these tests
     vi.stubEnv('VITE_SHEET_ID_DESIGN', '');
     vi.stubEnv('VITE_SHEET_ID_PROCESS', '');
+    vi.stubEnv('VITE_SHEET_ID_SOCIAL', '');
+    vi.stubEnv('VITE_SHEET_GID_SOCIAL', '');
   });
 
   it('returns loading state initially', () => {
@@ -69,5 +71,29 @@ describe('useDashboardData', () => {
     await waitFor(() => expect(result.current.rows).toEqual([{ a: 1 }]));
     rerender({ trigger: 1 });
     await waitFor(() => expect(result.current.rows).toEqual([{ a: 2 }]));
+  });
+
+  it('direct-fetches the public social sheet in the browser', async () => {
+    fetch.mockResolvedValueOnce({
+      ok: true,
+      text: async () => [
+        'Application,Category,Facebook Followers,Instagram Followers,TikTok Followers,LinkedIn Followers,Google Play Store Reviews,Google Play Store Downloads',
+        'ROX,Digital Lifestyle / Telco,24k,17.8k,82.2k,4k,76.1k,10M+',
+      ].join('\n'),
+    });
+    const { result } = renderHook(() => useDashboardData('social'));
+    await waitFor(() => expect(result.current.sheetStatus).toBe('ok'));
+    expect(result.current.rows).toEqual([{
+      application: 'ROX',
+      category: 'Digital Lifestyle / Telco',
+      facebook: '24k',
+      instagram: '17.8k',
+      tiktok: '82.2k',
+      linkedin: '4k',
+      playReviews: '76.1k',
+      playDownloads: '10M+',
+    }]);
+    expect(fetch.mock.calls[0][0]).toContain('1E9_LrPiQRa3FvKzOHDwmNpd8mbYiXLURJlkvbHzyY8Q');
+    expect(fetch.mock.calls[0][0]).toContain('range=A2%3AH');
   });
 });

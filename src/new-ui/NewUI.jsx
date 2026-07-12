@@ -11,12 +11,14 @@ import { logout } from '../App.jsx';
 import { DesignView } from './tabs/DesignView.jsx';
 import { StandardizationView } from './tabs/StandardizationView.jsx';
 import { ProcessView } from './tabs/ProcessView.jsx';
+import { SocialView } from './tabs/SocialView.jsx';
 import { StrategyView } from './tabs/StrategyView.jsx';
 
 const TABS = [
   { id: 'design',   label: 'Design & Usability' },
   { id: 'std',      label: 'Product Optimization' },
   { id: 'process',  label: 'Process Innovation' },
+  { id: 'social',   label: 'Social Media Footprint' },
   { id: 'strategy', label: 'Strategic Overview' },
 ];
 
@@ -30,6 +32,18 @@ export default function NewUI() {
   const [availablePeriods, setAvailablePeriods] = useState([]);
   const [overallStatus, setOverallStatus] = useState('loading');
   const [search, setSearch] = useState('');
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    try { return window.localStorage.getItem('nu:sidebar:collapsed') === '1'; } catch { return false; }
+  });
+
+  const toggleSidebar = useCallback(() => {
+    setSidebarCollapsed((prev) => {
+      const next = !prev;
+      try { window.localStorage.setItem('nu:sidebar:collapsed', next ? '1' : '0'); } catch { /* no-op */ }
+      return next;
+    });
+  }, []);
 
   // Probe live data on mount + after sync to learn lastSyncedAt + periods in data.
   // Period options are scoped to the active tab so Design's dropdown only shows
@@ -73,11 +87,15 @@ export default function NewUI() {
   }, [periodFrom, periodTo, ALL_PERIODS]);
 
   const clearPeriod = () => { setPeriodFrom('All'); setPeriodTo('All'); };
-  const showPeriod = activeTab !== 'process';
+  const showPeriod = activeTab !== 'process' && activeTab !== 'social';
+
+  const searchPlaceholder = activeTab === 'social'
+    ? 'Search applications, categories, platforms...'
+    : 'Search projects, tasks, resources...';
 
   return (
     <div className="nu">
-      <div className="nu-shell">
+      <div className="nu-shell" data-sidebar-collapsed={sidebarCollapsed}>
         <Sidebar
           tabs={TABS}
           activeTab={activeTab}
@@ -86,6 +104,8 @@ export default function NewUI() {
           onSyncComplete={onSyncComplete}
           syncStatus={overallStatus}
           onLogout={logout}
+          collapsed={sidebarCollapsed}
+          onToggleCollapsed={toggleSidebar}
         />
 
         <div className="nu-main">
@@ -98,11 +118,13 @@ export default function NewUI() {
             onPeriodChange={(f, t) => { setPeriodFrom(f); setPeriodTo(t); }}
             onPeriodClear={clearPeriod}
             showPeriod={showPeriod}
+            searchPlaceholder={searchPlaceholder}
           />
 
           {activeTab === 'design'   && <DesignView   key="design"   globalPeriodRange={globalPeriodRange} syncTick={syncTick} search={search} />}
           {activeTab === 'std'      && <StandardizationView key="std" globalPeriodRange={globalPeriodRange} syncTick={syncTick} search={search} />}
           {activeTab === 'process'  && <ProcessView  key="process"  syncTick={syncTick} search={search} />}
+          {activeTab === 'social'   && <SocialView   key="social"   syncTick={syncTick} search={search} />}
           {activeTab === 'strategy' && <StrategyView key="strategy" syncTick={syncTick} search={search} />}
         </div>
       </div>
