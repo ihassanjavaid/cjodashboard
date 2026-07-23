@@ -191,6 +191,7 @@ export const bauSchema = {
   uat_type:           { column: 'UAT Type',                            type: 'string' },
   month:              { column: 'Month',                               type: 'string', transform: normalizeMonth },
   period:             { column: 'Month',                               type: 'string', transform: normalizePeriod },
+  _raw_date:          { column: ['Date & Month', 'Month'], type: 'string' }, // TEMP diagnostic
   manned_per_day:     { column: 'Manned Hours\n (Per Day)',            type: 'number' },
   total_manned:       { column: 'Total Manned\n (hrs)',                type: 'number' },
   total_cases:        { column: 'Total Test Cases',                    type: 'number' },
@@ -226,6 +227,7 @@ export const jlvSchema = {
   uat_type:           { column: 'UAT Type',                            type: 'string' },
   month:              { column: 'Month',                               type: 'string', transform: normalizeMonth },
   period:             { column: 'Month',                               type: 'string', transform: normalizePeriod },
+  _raw_date:          { column: ['Date & Month', 'Month'], type: 'string' }, // TEMP diagnostic
   planned:            { column: '__PLANNED__',                         type: 'string', transform: () => 'Planned' },
   manned_per_day:     { column: 'Manned Hours\n (Per Day)',            type: 'number' },
   total_manned:       { column: 'Total Manned Hours',                  type: 'number' },
