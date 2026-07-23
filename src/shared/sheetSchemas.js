@@ -227,7 +227,7 @@ export const jlvSchema = {
   uat_type:           { column: 'UAT Type',                            type: 'string' },
   month:              { column: 'Month',                               type: 'string', transform: normalizeMonth },
   period:             { column: 'Month',                               type: 'string', transform: normalizePeriod },
-  _raw_date:          { column: ['Date & Month', 'Month'], type: 'string' }, // TEMP diagnostic
+  _raw_date:          { column: ['Date & Month', 'Month'], type: 'string' }, // TEMP diagnostic for debugging
   planned:            { column: '__PLANNED__',                         type: 'string', transform: () => 'Planned' },
   manned_per_day:     { column: 'Manned Hours\n (Per Day)',            type: 'number' },
   total_manned:       { column: 'Total Manned Hours',                  type: 'number' },
