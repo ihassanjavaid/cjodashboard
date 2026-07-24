@@ -110,9 +110,7 @@
 /* ── Sidebar ─────────────────────────────────────────────────────────────── */
 
 .nu-sidebar {
-  background:
-    radial-gradient(150% 65% at 100% 0%, oklch(46% 0.18 30 / 0.55) 0%, transparent 60%),
-    linear-gradient(165deg, oklch(28% 0.135 20) 0%, oklch(35% 0.16 25) 45%, oklch(19% 0.09 18) 100%);
+  background: var(--nu-card);
   border-radius: var(--nu-r-card);
   padding: 24px 20px 20px;
   display: flex;
@@ -122,92 +120,16 @@
   top: 18px;
   align-self: start;
   height: calc(100vh - 36px);
-  box-shadow: 0 20px 44px -20px oklch(20% 0.09 18 / 0.6), var(--nu-shadow-card);
-  overflow: hidden;
-}
-
-.nu-sidebar::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background-image: radial-gradient(oklch(98% 0.01 90 / 0.05) 1px, transparent 1px);
-  background-size: 16px 16px;
-}
-
-.nu-sidebar > * { position: relative; z-index: 1; }
-
-/* ── Sidebar contrast overrides — dark maroon field needs light text ─────── */
-
-.nu-sidebar .nu-brand__title { color: oklch(98% 0.01 90); }
-.nu-sidebar .nu-brand__sub   { color: oklch(88% 0.03 60 / 0.65); }
-.nu-sidebar .nu-brand__logo  { background: oklch(98% 0.004 25 / 0.14); }
-
-.nu-sidebar .nu-nav__label { color: oklch(88% 0.03 60 / 0.42); }
-.nu-sidebar .nu-nav__item  { color: oklch(92% 0.02 60 / 0.78); }
-
-.nu-sidebar .nu-nav__count {
-  background: oklch(98% 0.004 25 / 0.12);
-  color: oklch(92% 0.02 60 / 0.85);
-}
-
-.nu-sidebar .nu-nav__badge {
-  background: oklch(98% 0.004 25 / 0.14);
-  color: oklch(92% 0.02 60 / 0.85);
-}
-
-.nu-sidebar .nu-nav__item[data-disabled="true"] { opacity: 0.35; }
-
-@media (hover: hover) and (pointer: fine) {
-  .nu-sidebar .nu-nav__item:not([data-active="true"]):hover {
-    background: oklch(98% 0.004 25 / 0.10);
-    color: oklch(99% 0.005 90);
-  }
-}
-
-/* Active tab — warm gold against the maroon field, on-brand and highly legible */
-.nu-sidebar .nu-nav__item[data-active="true"] {
-  background: linear-gradient(120deg, oklch(80% 0.14 85), oklch(73% 0.15 76));
-  color: oklch(24% 0.05 40);
-  box-shadow: 0 10px 22px -14px oklch(74% 0.15 78 / 0.65);
-}
-.nu-sidebar .nu-nav__item[data-active="true"] .nu-nav__item-icon { color: oklch(24% 0.05 40); }
-.nu-sidebar .nu-nav__item[data-active="true"] .nu-nav__count {
-  background: oklch(24% 0.05 40 / 0.14);
-  color: oklch(24% 0.05 40);
-}
-@media (hover: hover) and (pointer: fine) {
-  .nu-sidebar .nu-nav__item[data-active="true"]:hover { filter: brightness(1.05); }
-}
-
-/* Sync card — frosted glass so it reads as a distinct panel on the dark field
-   instead of disappearing into a same-toned solid accent block. */
-.nu-sidebar .nu-sync-card {
-  background: oklch(98% 0.004 25 / 0.08);
-  border: 1px solid oklch(98% 0.004 25 / 0.14);
-  backdrop-filter: blur(6px);
-}
-.nu-sidebar .nu-sync-card::before { display: none; }
-.nu-sidebar .nu-sync-card__label { color: oklch(92% 0.02 60 / 0.6); }
-.nu-sidebar .nu-sync-card__time  { color: oklch(98% 0.01 90); }
-.nu-sidebar .nu-sync-card__btn {
-  background: oklch(98% 0.01 90);
-  color: oklch(30% 0.14 22);
+  box-shadow: var(--nu-shadow-card);
 }
 
 .nu-logout-btn {
   margin-top: 8px;
   padding-top: 10px;
   border-radius: 0;
-  border-top: 1px solid oklch(98% 0.004 25 / 0.14);
-  color: oklch(92% 0.02 60 / 0.6);
-  opacity: 1;
-}
-@media (hover: hover) and (pointer: fine) {
-  .nu-logout-btn:hover {
-    background: oklch(98% 0.004 25 / 0.08);
-    color: oklch(99% 0.005 90);
-  }
+  border-top: 1px solid var(--nu-line);
+  color: var(--nu-ink-3);
+  opacity: 0.7;
 }
 
 @media (max-width: 1024px) {
