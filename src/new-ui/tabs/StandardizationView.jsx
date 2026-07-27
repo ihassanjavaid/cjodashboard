@@ -80,16 +80,16 @@ export function StandardizationView({ globalPeriodRange, syncTick, search }) {
   const successRatio = pct(totalPass, totalCases, 1);
   const fixRate      = pct(issuesF, issuesH, 0);
 
-  const monthlyData = ['January', 'February', 'March'].map((m) => {
-    const sub = filtered.filter((d) => d.month === m);
-    return {
-      month: m.substring(0, 3),
-      uats:     sub.length,
-      manned:   sub.reduce((s, d) => s + (d.total_manned || 0), 0),
-      issues_h: sub.reduce((s, d) => s + (d.issues_highlighted || 0), 0),
-      issues_f: sub.reduce((s, d) => s + (d.issues_fixed || 0), 0),
-    };
-  });
+const monthlyData = sortPeriods([...new Set(filtered.map((d) => d.period).filter(Boolean))]).map((p) => {
+  const sub = filtered.filter((d) => d.period === p);
+  return {
+    month: p, // "Jan 26" — already short + year-qualified
+    uats: sub.length,
+    manned: sub.reduce((s, d) => s + (d.total_manned || 0), 0),
+    issues_h: sub.reduce((s, d) => s + (d.issues_highlighted || 0), 0),
+    issues_f: sub.reduce((s, d) => s + (d.issues_fixed || 0), 0),
+  };
+});
 
   const assignedByData = toBarData(cnt(filtered, 'assigned_by')).map((d, i) => ({ ...d, fill: colors.palette[i % colors.palette.length] }));
   const segmentData    = toBarData(cnt(filtered, 'segment')).map((d, i) => ({ ...d, fill: colors.palette[i % colors.palette.length] }));
