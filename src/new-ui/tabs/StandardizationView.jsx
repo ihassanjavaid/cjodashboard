@@ -12,7 +12,8 @@ import { ChartFrame, NUTooltip } from '../components/ChartFrame.jsx';
 import { DonutChart } from '../components/DonutChart.jsx';
 import { FilterRow, Filter, SourceToggle } from '../components/Filters.jsx';
 import { axisProps, gridProps, chartColors, chartMargins } from '../lib/chartTheme.js';
-import { cnt, toBarData, fmt, fmt1, normalizeQuery, pct, rowMatchesSearch, uniqueSorted } from '../lib/utils.js';
+// import { cnt, toBarData, fmt, fmt1, normalizeQuery, pct, rowMatchesSearch, uniqueSorted } from '../lib/utils.js';
+import { cnt, toBarData, fmt, fmt1, normalizeQuery, pct, rowMatchesSearch, uniqueSorted, monthsToDate } from '../lib/utils.js';
 
 const FALLBACK = { bau: [], jlv: [] };
 
@@ -80,10 +81,10 @@ export function StandardizationView({ globalPeriodRange, syncTick, search }) {
   const successRatio = pct(totalPass, totalCases, 1);
   const fixRate      = pct(issuesF, issuesH, 0);
 
-const monthlyData = sortPeriods([...new Set(filtered.map((d) => d.period).filter(Boolean))]).map((p) => {
+const monthlyData = monthsToDate(2026).map((p) => {
   const sub = filtered.filter((d) => d.period === p);
   return {
-    month: p, // "Jan 26" — already short + year-qualified
+    month: p, // e.g. "Jan 26"
     uats: sub.length,
     manned: sub.reduce((s, d) => s + (d.total_manned || 0), 0),
     issues_h: sub.reduce((s, d) => s + (d.issues_highlighted || 0), 0),
