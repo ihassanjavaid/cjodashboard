@@ -13,7 +13,7 @@ import { DonutChart } from '../components/DonutChart.jsx';
 import { FilterRow, Filter, SourceToggle } from '../components/Filters.jsx';
 import { axisProps, gridProps, chartColors, chartMargins } from '../lib/chartTheme.js';
 // import { cnt, toBarData, fmt, fmt1, normalizeQuery, pct, rowMatchesSearch, uniqueSorted } from '../lib/utils.js';
-import { cnt, toBarData, fmt, fmt1, normalizeQuery, pct, rowMatchesSearch, uniqueSorted, monthsToDate } from '../lib/utils.js';
+import { cnt, toBarData, fmt, fmt1, fmt0, normalizeQuery, pct, rowMatchesSearch, uniqueSorted, monthsToDate } from '../lib/utils.js';
 
 const FALLBACK = { bau: [], jlv: [] };
 
@@ -169,7 +169,7 @@ const monthlyData = monthsToDate(2026).map((p) => {
           <KpiCard label="Total UATs" value={totalUATs} sub={`${uniqueSorted(filtered.map((d) => d.assigned_to)).length} active resources`} filled />
         </div>
         <div className="nu-rise" data-i="1">
-          <KpiCard label="Manned Hours" value={`${fmt1(totalManned)} hrs`} sub={`${totalUATs} UATs logged`} />
+          <KpiCard label="Manned Hours" value={`${fmt0(totalManned)} hrs`} sub={`${totalUATs} UATs logged`} />
         </div>
         <div className="nu-rise" data-i="2">
           <KpiCard label="Success Ratio" value={`${successRatio}%`} sub={`${totalPass}/${totalCases} passed`} />
