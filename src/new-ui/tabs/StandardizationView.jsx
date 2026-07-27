@@ -12,7 +12,8 @@ import { ChartFrame, NUTooltip } from '../components/ChartFrame.jsx';
 import { DonutChart } from '../components/DonutChart.jsx';
 import { FilterRow, Filter, SourceToggle } from '../components/Filters.jsx';
 import { axisProps, gridProps, chartColors, chartMargins } from '../lib/chartTheme.js';
-import { cnt, toBarData, fmt, fmt1, normalizeQuery, pct, rowMatchesSearch, uniqueSorted } from '../lib/utils.js';
+// import { cnt, toBarData, fmt, fmt1, normalizeQuery, pct, rowMatchesSearch, uniqueSorted } from '../lib/utils.js';
+import { cnt, toBarData, fmt, fmt1, fmt0, normalizeQuery, pct, rowMatchesSearch, uniqueSorted, monthsToDate } from '../lib/utils.js';
 
 const FALLBACK = { bau: [], jlv: [] };
 
@@ -80,16 +81,16 @@ export function StandardizationView({ globalPeriodRange, syncTick, search }) {
   const successRatio = pct(totalPass, totalCases, 1);
   const fixRate      = pct(issuesF, issuesH, 0);
 
-  const monthlyData = ['January', 'February', 'March'].map((m) => {
-    const sub = filtered.filter((d) => d.month === m);
-    return {
-      month: m.substring(0, 3),
-      uats:     sub.length,
-      manned:   sub.reduce((s, d) => s + (d.total_manned || 0), 0),
-      issues_h: sub.reduce((s, d) => s + (d.issues_highlighted || 0), 0),
-      issues_f: sub.reduce((s, d) => s + (d.issues_fixed || 0), 0),
-    };
-  });
+const monthlyData = monthsToDate(2026).map((p) => {
+  const sub = filtered.filter((d) => d.period === p);
+  return {
+    month: p, // e.g. "Jan 26"
+    uats: sub.length,
+    manned: sub.reduce((s, d) => s + (d.total_manned || 0), 0),
+    issues_h: sub.reduce((s, d) => s + (d.issues_highlighted || 0), 0),
+    issues_f: sub.reduce((s, d) => s + (d.issues_fixed || 0), 0),
+  };
+});
 
   const assignedByData = toBarData(cnt(filtered, 'assigned_by')).map((d, i) => ({ ...d, fill: colors.palette[i % colors.palette.length] }));
   const segmentData    = toBarData(cnt(filtered, 'segment')).map((d, i) => ({ ...d, fill: colors.palette[i % colors.palette.length] }));
@@ -168,7 +169,7 @@ export function StandardizationView({ globalPeriodRange, syncTick, search }) {
           <KpiCard label="Total UATs" value={totalUATs} sub={`${uniqueSorted(filtered.map((d) => d.assigned_to)).length} active resources`} filled />
         </div>
         <div className="nu-rise" data-i="1">
-          <KpiCard label="Manned Hours" value={`${fmt1(totalManned)} hrs`} sub={`${totalUATs} UATs logged`} />
+          <KpiCard label="Manned Hours" value={`${fmt0(totalManned)} hrs`} sub={`${totalUATs} UATs logged`} />
         </div>
         <div className="nu-rise" data-i="2">
           <KpiCard label="Success Ratio" value={`${successRatio}%`} sub={`${totalPass}/${totalCases} passed`} />
