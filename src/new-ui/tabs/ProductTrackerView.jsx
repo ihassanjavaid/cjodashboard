@@ -51,7 +51,7 @@ function isExpired(row) {
 }
 
 function isCommercial(row) {
-  return normStatus(row.product_type) === 'Commercial';
+  return normStatus(row.category).includes('commercial') || normStatus(row.product_type).includes('commercial');
 }
 
 function matchesCombinedSearch(row, globalSearch, tableSearch) {
@@ -310,7 +310,7 @@ export function ProductTrackerView({ syncTick, search }) {
         <Filter label="Product Family" value={productFamily}  options={productFamilies} onChange={setProductFamily} />
       </FilterRow>
 
-      <div className="nu-grid nu-grid--quad" style={{ marginTop: 14 }}>
+      <div className="nu-grid nu-grid--2" style={{ marginTop: 14 }}>
         <DimensionChart
           title="Product Type"
           type="donut"
@@ -320,6 +320,17 @@ export function ProductTrackerView({ syncTick, search }) {
           ariaLabel="Product type breakdown"
         />
 
+        <DimensionChart
+          title="Product Family"
+          type="donut"
+          data={familyData}
+          colors={colors}
+          primaryName={familyData[0]?.name}
+          ariaLabel="Product family breakdown"
+        />
+      </div>
+
+      <div className="nu-grid nu-grid--2" style={{ marginTop: 14 }}>
         <DimensionChart
           title="Expired/Live"
           type="bar"
@@ -334,15 +345,6 @@ export function ProductTrackerView({ syncTick, search }) {
           data={categoryData}
           colors={colors}
           ariaLabel="Products grouped by category"
-        />
-
-        <DimensionChart
-          title="Product Family"
-          type="donut"
-          data={familyData}
-          colors={colors}
-          primaryName={familyData[0]?.name}
-          ariaLabel="Product family breakdown"
         />
       </div>
 
