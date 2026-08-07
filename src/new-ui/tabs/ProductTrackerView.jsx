@@ -51,7 +51,7 @@ function isExpired(row) {
 }
 
 function isCommercial(row) {
-  return normStatus(row.category).includes('commercial') || normStatus(row.product_type).includes('commercial');
+  return normStatus(row.category) === 'commercial';
 }
 
 function matchesCombinedSearch(row, globalSearch, tableSearch) {
@@ -70,7 +70,7 @@ function donutFill(name, colors) {
   const n = String(name || '').toLowerCase();
   if (n === 'live') return colors.positive;
   if (n === 'expired') return colors.warning;
-  if (n.includes('commercial')) return colors.accent;
+  if (n === 'commercial') return colors.accent;
   return null;
 }
 
@@ -274,7 +274,7 @@ export function ProductTrackerView({ syncTick, search }) {
         </div>
         <div className="nu-rise" data-i="2">
           <KpiCard
-            label="Commercial Prod."
+            label="Commercial Products"
             value={commercialCount}
             sub={`${pct(commercialCount, totalProducts)}% of filtered`}
           />
