@@ -27,7 +27,7 @@ const COLUMNS = [
   { key: 'product_name',   label: 'Product Name',   sortable: true },
   { key: 'product_type',   label: 'Product Type',   sortable: true },
   { key: 'expired_live',   label: 'Expired/Live',   sortable: true },
-  { key: 'category',       label: 'Category (cat)', sortable: true },
+  { key: 'category',       label: 'Category', sortable: true },
   { key: 'product_family', label: 'Product Family', sortable: true },
 ];
 
@@ -250,7 +250,7 @@ export function ProductTrackerView({ syncTick, search }) {
       <header className="nu-page__head">
         <div className="nu-page__heading">
           <h1>Product Tracker</h1>
-          <p>Portfolio overview of product name, type, lifecycle status, category, and product family.</p>
+          <p>Portfolio overview of product types, live & expired products, commercial & non-commercial products, and product families.</p>
         </div>
       </header>
 
@@ -269,28 +269,28 @@ export function ProductTrackerView({ syncTick, search }) {
           <KpiCard
             label="Live Products"
             value={liveCount}
-            sub={`${pct(liveCount, totalProducts)}% of filtered`}
+            sub={`${pct(liveCount, totalProducts)}% of total listed`}
           />
         </div>
         <div className="nu-rise" data-i="2">
           <KpiCard
-            label="Commercial Products"
+            label="Commercial Prod."
             value={commercialCount}
-            sub={`${pct(commercialCount, totalProducts)}% of filtered`}
+            sub={`${pct(commercialCount, totalProducts)}% of currently filtered`}
           />
         </div>
         <div className="nu-rise" data-i="4">
           <KpiCard
             label="Product Types"
             value={typeCount}
-            sub="Distinct types"
+            sub="Distinct Types"
           />
         </div>
         <div className="nu-rise" data-i="5">
           <KpiCard
             label="Product Families"
             value={familyCount}
-            sub={`${categoryCount} categories`}
+            sub={`${categoryCount} Categories`}
           />
         </div>
       </div>
@@ -312,7 +312,7 @@ export function ProductTrackerView({ syncTick, search }) {
 
       <div className="nu-grid nu-grid--2" style={{ marginTop: 14 }}>
         <DimensionChart
-          title="Product Type"
+          title="Product Types"
           type="donut"
           data={productTypeData}
           colors={colors}
@@ -321,7 +321,7 @@ export function ProductTrackerView({ syncTick, search }) {
         />
 
         <DimensionChart
-          title="Product Family"
+          title="Product Families"
           type="donut"
           data={familyData}
           colors={colors}
@@ -340,7 +340,7 @@ export function ProductTrackerView({ syncTick, search }) {
         />
 
         <DimensionChart
-          title="Category"
+          title="Categories"
           type="bar"
           data={categoryData}
           colors={colors}
@@ -350,7 +350,7 @@ export function ProductTrackerView({ syncTick, search }) {
 
       <div className="nu-grid nu-grid--full" style={{ marginTop: 14 }}>
         <ChartFrame
-          title="Product Portfolio"
+          title="Product Portfolio Details"
           caption={`${shown.length} of ${rows.length} products${searchSuffix}`}
           action={(
             <Search
