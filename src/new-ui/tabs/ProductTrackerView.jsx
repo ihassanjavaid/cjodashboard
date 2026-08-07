@@ -279,13 +279,6 @@ export function ProductTrackerView({ syncTick, search }) {
             sub={`${pct(commercialCount, totalProducts)}% of filtered`}
           />
         </div>
-        <div className="nu-rise" data-i="3">
-          <KpiCard
-            label="Expired Products"
-            value={expiredCount}
-            sub={`${pct(expiredCount, totalProducts)}% of filtered`}
-          />
-        </div>
         <div className="nu-rise" data-i="4">
           <KpiCard
             label="Product Types"
