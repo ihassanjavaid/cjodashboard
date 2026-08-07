@@ -6,4 +6,5 @@ export {
   bauSchema,
   jlvSchema,
   socialSchema,
+  stdtrackerSchema,
 } from '../../src/shared/sheetSchemas.js';

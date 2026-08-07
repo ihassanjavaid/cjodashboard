@@ -10,17 +10,19 @@ describe('sheet config registry', () => {
     delete process.env.SHEET_ID_STRATEGY;
     delete process.env.SHEET_ID_PROCESS;
     delete process.env.SHEET_ID_SOCIAL;
+    delete process.env.SHEET_ID_STDTRACKER;
     delete process.env.SHEET_GID_DESIGN;
     delete process.env.SHEET_GID_STD;
     delete process.env.SHEET_GID_STRATEGY;
     delete process.env.SHEET_GID_PROCESS;
     delete process.env.SHEET_GID_SOCIAL;
+    delete process.env.SHEET_GID_STDTRACKER;
     delete process.env.SHEET_GID_STD_BAU;
     delete process.env.SHEET_GID_STD_JLV;
   });
 
-  it('lists all five canonical tab ids', () => {
-    expect(ALL_TABS).toEqual(['design', 'std', 'process', 'strategy', 'social']);
+  it('lists all six canonical tab ids', () => {
+    expect(ALL_TABS).toEqual(['design', 'std', 'process', 'strategy', 'social', 'stdtracker']);
   });
 
   it('returns null for an unknown tab id', () => {
@@ -106,5 +108,18 @@ describe('sheet config registry', () => {
       range: 'A2:H',
       headersRow: true,
     });
+  });
+
+  it('builds a stdtracker config with auth tabular parser', () => {
+    process.env.SHEET_ID_STDTRACKER = 'tracker-sheet';
+    process.env.SHEET_GID_STDTRACKER = '54321';
+    expect(getSheetConfig('stdtracker')).toMatchObject({
+      id: 'stdtracker',
+      sheetId: 'tracker-sheet',
+      gid: '54321',
+      mode: 'auth',
+      parser: 'tabular',
+    });
+    expect(getSheetConfig('stdtracker').schema.product_name).toBeDefined();
   });
 });
