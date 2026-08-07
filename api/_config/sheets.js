@@ -1,8 +1,8 @@
-import { designSchema, stdSchema, strategySchema, bauSchema, jlvSchema, socialSchema } from './schemas.js';
+import { designSchema, stdSchema, strategySchema, bauSchema, jlvSchema, socialSchema, stdtrackerSchema } from './schemas.js';
 import { SHEET_FETCH_OVERRIDES } from '../../src/shared/sheetFetchOverrides.js';
 import { SOCIAL_SHEET_ID, SOCIAL_SHEET_GID } from '../../src/shared/socialSheetDefaults.js';
 
-export const ALL_TABS = ['design', 'std', 'process', 'strategy', 'social'];
+export const ALL_TABS = ['design', 'std', 'process', 'strategy', 'social', 'stdtracker'];
 
 const STATIC_PER_TAB = {
   // Design pulls from a sheet with one worksheet per month (December, January,
@@ -22,7 +22,8 @@ const STATIC_PER_TAB = {
   process:  { mode: 'public', parser: 'process-blocks', schema: null },
   std:      { mode: 'auth',   parser: 'tabular',        schema: stdSchema },
   strategy: { mode: 'auth',   parser: 'tabular',        schema: strategySchema },
-  social:   { mode: 'public', parser: 'tabular', schema: socialSchema, ...SHEET_FETCH_OVERRIDES.social },
+  social:     { mode: 'public', parser: 'tabular', schema: socialSchema, ...SHEET_FETCH_OVERRIDES.social },
+  stdtracker: { mode: 'auth',   parser: 'tabular', schema: stdtrackerSchema },
 };
 
 export function getSheetConfig(tab) {

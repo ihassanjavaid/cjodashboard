@@ -32,6 +32,13 @@ const ICONS = {
       <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
     </svg>
   ),
+  stdtracker: (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+      <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+      <line x1="12" y1="22.08" x2="12" y2="12" />
+    </svg>
+  ),
   strategy: (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M3 3v18h18" />
@@ -47,7 +54,7 @@ const ICONS = {
 };
 
 const TEAM_TAB_IDS = ['design', 'std', 'process'];
-const MISC_TAB_IDS = ['social'];
+const MISC_TAB_IDS = ['social', 'stdtracker'];
 const OVERVIEW_TAB_IDS = ['strategy'];
 const DISABLED_TAB_IDS = ['strategy'];
 
@@ -121,40 +128,40 @@ export function Sidebar({
       </div>
 
       <nav className="nu-nav" aria-label="Primary">
-        {overviewTabs.length > 0 && (
-          <div className="nu-nav__group">
-            <span className="nu-nav__label">Overview</span>
-            {overviewTabs.map(renderItem)}
-          </div>
-        )}
+        <div className="nu-nav__scroll">
+          {overviewTabs.length > 0 && (
+            <div className="nu-nav__group">
+              <span className="nu-nav__label">Overview</span>
+              {overviewTabs.map(renderItem)}
+            </div>
+          )}
 
-        <div className="nu-nav__group">
-          <span className="nu-nav__label">Teams</span>
-          {teamTabs.map(renderItem)}
+          <div className="nu-nav__group">
+            <span className="nu-nav__label">Teams</span>
+            {teamTabs.map(renderItem)}
+          </div>
+
+          {miscTabs.length > 0 && (
+            <div className="nu-nav__group">
+              <span className="nu-nav__label">Miscellaneous</span>
+              {miscTabs.map(renderItem)}
+            </div>
+          )}
+
+          {/* <div className="nu-nav__group">
+            <span className="nu-nav__label">General</span>
+            <span
+              className="nu-nav__item"
+              data-disabled="true"
+              aria-disabled="true"
+              title={collapsed ? 'Diagnostics (disabled)' : 'Disabled'}
+            >
+              <span className="nu-nav__item-icon">{ICONS.diagnostics}</span>
+              <span>Diagnostics</span>
+              <span className="nu-nav__badge">Disabled</span>
+            </span>
+          </div> */}
         </div>
-
-        {miscTabs.length > 0 && (
-          <div className="nu-nav__group">
-            <span className="nu-nav__label">Miscellaneous</span>
-            {miscTabs.map(renderItem)}
-          </div>
-        )}
-
-        {/* <div className="nu-nav__group">
-          <span className="nu-nav__label">General</span>
-          <span
-            className="nu-nav__item"
-            data-disabled="true"
-            aria-disabled="true"
-            title={collapsed ? 'Diagnostics (disabled)' : 'Disabled'}
-          >
-            <span className="nu-nav__item-icon">{ICONS.diagnostics}</span>
-            <span>Diagnostics</span>
-            <span className="nu-nav__badge">Disabled</span>
-          </span>
-        </div> */}
-
-        <div style={{ flex: 1 }} />
 
         <SyncCard
           status={syncStatus}

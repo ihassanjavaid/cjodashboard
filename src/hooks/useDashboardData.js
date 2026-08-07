@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import Papa from 'papaparse';
 import { mapRowToSchema } from '../shared/schemaMapper.js';
-import { designSchema, stdSchema, strategySchema, socialSchema } from '../shared/sheetSchemas.js';
+import { designSchema, stdSchema, strategySchema, socialSchema, stdtrackerSchema } from '../shared/sheetSchemas.js';
 import { parseProcessSheet } from '../shared/parseProcessSheet.js';
 import { SHEET_FETCH_OVERRIDES } from '../shared/sheetFetchOverrides.js';
 import { SOCIAL_SHEET_ID, SOCIAL_SHEET_GID } from '../shared/socialSheetDefaults.js';
@@ -10,7 +10,8 @@ const SCHEMA_BY_TAB = {
   design:   designSchema,
   std:      stdSchema,
   strategy: strategySchema,
-  social:   socialSchema,
+  social:     socialSchema,
+  stdtracker: stdtrackerSchema,
   // process uses the block-detection parser, not a tabular schema — see fetchPublicCsvFromBrowser.
 };
 

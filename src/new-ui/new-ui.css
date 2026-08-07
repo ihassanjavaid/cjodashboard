@@ -240,8 +240,9 @@
 
 @media (max-width: 1024px) {
   .nu-sidebar {
-    position: static;
-    height: auto;
+    position: sticky;
+    top: 12px;
+    height: calc(100dvh - 24px);
   }
 }
 
@@ -285,10 +286,45 @@
 .nu-nav {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 14px;
   flex: 1;
   min-height: 0;
   padding: 0 10px;
+}
+
+/* Only the tab groups scroll internally — the sync card below always
+   stays fully visible without needing to scroll the whole sidebar. */
+.nu-nav__scroll {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  margin-right: -8px;
+  padding-right: 8px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--nu-line) transparent;
+}
+
+.nu-nav__scroll::-webkit-scrollbar {
+  width: 5px;
+}
+
+.nu-nav__scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.nu-nav__scroll::-webkit-scrollbar-thumb {
+  background: var(--nu-line);
+  border-radius: 4px;
+}
+
+.nu-sidebar[data-collapsed="true"] .nu-nav__scroll {
+  margin-right: 0;
+  padding-right: 0;
+  overflow-y: visible;
 }
 
 .nu-nav__group {

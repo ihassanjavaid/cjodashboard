@@ -1,6 +1,15 @@
 import { useState } from 'react';
 import { C } from '../shared/dashboardKit.jsx';
 
+const TAB_LABELS = {
+  design: 'Design & Usability',
+  std: 'Product Optimization',
+  process: 'Process Innovation',
+  social: 'Social Media Footprint',
+  stdtracker: 'Product Tracker',
+  strategy: 'Strategic Overview',
+};
+
 export function Diagnostics() {
   const [password, setPassword] = useState('');
   const [data, setData] = useState(null);
@@ -46,7 +55,7 @@ export function Diagnostics() {
       <h3>Per-sheet status</h3>
       <ul>
         {Object.entries(data.lastSyncStatus?.perSheet ?? {}).map(([tab, status]) => (
-          <li key={tab}>{tab}: {status}</li>
+          <li key={tab}>{TAB_LABELS[tab] || tab}: {status}</li>
         ))}
       </ul>
       {data.lastSyncStatus?.errors?.length > 0 && (

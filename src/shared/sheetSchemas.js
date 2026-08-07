@@ -264,3 +264,13 @@ export const socialSchema = {
   playReviews:   { column: 'Google Play Store Reviews', type: 'string' },
   playDownloads: { column: 'Google Play Store Downloads', type: 'string' },
 };
+
+// Product Tracker — tabular portfolio sheet (Product Name, Product Type,
+// Expired/Live, Category (cat), Product Family).
+export const stdtrackerSchema = {
+  product_name:   { column: ['Product Name', 'Product name'], type: 'string' },
+  product_type:   { column: ['Product Type', 'Product type'], type: 'string' },
+  expired_live:   { column: ['Expired/Live', 'Expired / Live', 'Status'], type: 'string' },
+  category:       { column: ['Category (cat)', 'Category', 'Cat'], type: 'string' },
+  product_family: { column: ['Product Family', 'Product family'], type: 'string' },
+};
