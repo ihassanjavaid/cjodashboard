@@ -128,40 +128,40 @@ export function Sidebar({
       </div>
 
       <nav className="nu-nav" aria-label="Primary">
-        {overviewTabs.length > 0 && (
-          <div className="nu-nav__group">
-            <span className="nu-nav__label">Overview</span>
-            {overviewTabs.map(renderItem)}
-          </div>
-        )}
+        <div className="nu-nav__scroll">
+          {overviewTabs.length > 0 && (
+            <div className="nu-nav__group">
+              <span className="nu-nav__label">Overview</span>
+              {overviewTabs.map(renderItem)}
+            </div>
+          )}
 
-        <div className="nu-nav__group">
-          <span className="nu-nav__label">Teams</span>
-          {teamTabs.map(renderItem)}
+          <div className="nu-nav__group">
+            <span className="nu-nav__label">Teams</span>
+            {teamTabs.map(renderItem)}
+          </div>
+
+          {miscTabs.length > 0 && (
+            <div className="nu-nav__group">
+              <span className="nu-nav__label">Miscellaneous</span>
+              {miscTabs.map(renderItem)}
+            </div>
+          )}
+
+          {/* <div className="nu-nav__group">
+            <span className="nu-nav__label">General</span>
+            <span
+              className="nu-nav__item"
+              data-disabled="true"
+              aria-disabled="true"
+              title={collapsed ? 'Diagnostics (disabled)' : 'Disabled'}
+            >
+              <span className="nu-nav__item-icon">{ICONS.diagnostics}</span>
+              <span>Diagnostics</span>
+              <span className="nu-nav__badge">Disabled</span>
+            </span>
+          </div> */}
         </div>
-
-        {miscTabs.length > 0 && (
-          <div className="nu-nav__group">
-            <span className="nu-nav__label">Miscellaneous</span>
-            {miscTabs.map(renderItem)}
-          </div>
-        )}
-
-        {/* <div className="nu-nav__group">
-          <span className="nu-nav__label">General</span>
-          <span
-            className="nu-nav__item"
-            data-disabled="true"
-            aria-disabled="true"
-            title={collapsed ? 'Diagnostics (disabled)' : 'Disabled'}
-          >
-            <span className="nu-nav__item-icon">{ICONS.diagnostics}</span>
-            <span>Diagnostics</span>
-            <span className="nu-nav__badge">Disabled</span>
-          </span>
-        </div> */}
-
-        <div style={{ flex: 1 }} />
 
         <SyncCard
           status={syncStatus}

@@ -51,7 +51,7 @@ function isExpired(row) {
 }
 
 function isCommercial(row) {
-  return normStatus(row.product_type).includes('commercial');
+  return normStatus(row.product_type) === 'Commercial';
 }
 
 function matchesCombinedSearch(row, globalSearch, tableSearch) {
@@ -113,61 +113,65 @@ function SortableTh({ col, sortKey, sortDir, onSort }) {
   );
 }
 
-function DimensionCharts({ title, data, colors, primaryName, barAriaLabel, donutAriaLabel }) {
-  const donutData = data.map((d, i) => ({
-    ...d,
-    fill: donutFill(d.name, colors) || colors.palette[i % colors.palette.length],
-  }));
+// Single-infographic dimension card — either a donut (pie) or a horizontal
+// bar chart, never both, to avoid repeating the same breakdown twice.
+function DimensionChart({ title, type, data, colors, primaryName, ariaLabel }) {
+  if (type === 'donut') {
+    const donutData = data.map((d, i) => ({
+      ...d,
+      fill: donutFill(d.name, colors) || colors.palette[i % colors.palette.length],
+    }));
 
-  return (
-    <div className="nu-grid nu-grid--2" style={{ marginTop: 14 }}>
+    return (
       <ChartFrame
-        title={`${title} — Breakdown`}
+        title={title}
         caption={`${data.length} categories`}
         empty={data.length === 0}
       >
         <DonutChart
           data={donutData}
           colors={colors}
-          ariaLabel={donutAriaLabel}
+          ariaLabel={ariaLabel}
           primaryName={primaryName}
           totalLabel="products"
           height={220}
         />
       </ChartFrame>
+    );
+  }
 
-      <ChartFrame
-        title={`${title} — Distribution`}
-        caption="Count by category"
-        empty={data.length === 0}
-      >
-        <ResponsiveContainer width="100%" height={Math.max(220, data.length * 32)}>
-          <BarChart data={data} layout="vertical" barCategoryGap={12} margin={chartMargins('vertical')} accessibilityLayer aria-label={barAriaLabel}>
-            <CartesianGrid {...gridProps(colors)} horizontal={false} vertical />
-            <XAxis type="number" {...axisProps(colors, { side: 'x', minimal: true })} />
-            <YAxis
-              type="category"
-              dataKey="name"
-              width={110}
-              tick={{ fill: colors.ink2, fontSize: 11, fontFamily: 'Geist, sans-serif' }}
-              axisLine={false}
-              tickLine={false}
+  return (
+    <ChartFrame
+      title={title}
+      caption="Count by category"
+      empty={data.length === 0}
+    >
+      <ResponsiveContainer width="100%" height={Math.max(220, data.length * 32)}>
+        <BarChart data={data} layout="vertical" barCategoryGap={12} margin={chartMargins('vertical')} accessibilityLayer aria-label={ariaLabel}>
+          <CartesianGrid {...gridProps(colors)} horizontal={false} vertical />
+          <XAxis type="number" {...axisProps(colors, { side: 'x', minimal: true })} />
+          <YAxis
+            type="category"
+            dataKey="name"
+            width={110}
+            tick={{ fill: colors.ink2, fontSize: 11, fontFamily: 'Geist, sans-serif' }}
+            axisLine={false}
+            tickLine={false}
+          />
+          <Tooltip content={<NUTooltip />} cursor={{ fill: colors.cursor }} />
+          <Bar dataKey="value" name="Products" barSize={18} radius={[0, 10, 10, 0]}>
+            {data.map((entry, i) => (
+              <Cell key={entry.name} fill={donutFill(entry.name, colors) || (i === 0 ? colors.accent : colors.ink3)} />
+            ))}
+            <LabelList
+              dataKey="value"
+              position="right"
+              style={{ fill: colors.ink3, fontSize: 10, fontFamily: 'JetBrains Mono, monospace' }}
             />
-            <Tooltip content={<NUTooltip />} cursor={{ fill: colors.cursor }} />
-            <Bar dataKey="value" name="Products" barSize={18} radius={[0, 10, 10, 0]}>
-              {data.map((entry, i) => (
-                <Cell key={entry.name} fill={donutFill(entry.name, colors) || (i === 0 ? colors.accent : colors.ink3)} />
-              ))}
-              <LabelList
-                dataKey="value"
-                position="right"
-                style={{ fill: colors.ink3, fontSize: 10, fontFamily: 'JetBrains Mono, monospace' }}
-              />
-            </Bar>
-          </BarChart>
-        </ResponsiveContainer>
-      </ChartFrame>
-    </div>
+          </Bar>
+        </BarChart>
+      </ResponsiveContainer>
+    </ChartFrame>
   );
 }
 
@@ -270,7 +274,7 @@ export function ProductTrackerView({ syncTick, search }) {
         </div>
         <div className="nu-rise" data-i="2">
           <KpiCard
-            label="Commercial Products"
+            label="Commercial Prod."
             value={commercialCount}
             sub={`${pct(commercialCount, totalProducts)}% of filtered`}
           />
@@ -313,41 +317,41 @@ export function ProductTrackerView({ syncTick, search }) {
         <Filter label="Product Family" value={productFamily}  options={productFamilies} onChange={setProductFamily} />
       </FilterRow>
 
-      <DimensionCharts
-        title="Product Type"
-        data={productTypeData}
-        colors={colors}
-        primaryName={productTypeData[0]?.name}
-        barAriaLabel="Products grouped by product type"
-        donutAriaLabel="Product type breakdown"
-      />
+      <div className="nu-grid nu-grid--quad" style={{ marginTop: 14 }}>
+        <DimensionChart
+          title="Product Type"
+          type="donut"
+          data={productTypeData}
+          colors={colors}
+          primaryName={productTypeData[0]?.name}
+          ariaLabel="Product type breakdown"
+        />
 
-      <DimensionCharts
-        title="Expired/Live"
-        data={statusData}
-        colors={colors}
-        primaryName="Live"
-        barAriaLabel="Products grouped by expired or live status"
-        donutAriaLabel="Expired versus live breakdown"
-      />
+        <DimensionChart
+          title="Expired/Live"
+          type="bar"
+          data={statusData}
+          colors={colors}
+          ariaLabel="Products grouped by expired or live status"
+        />
 
-      <DimensionCharts
-        title="Category"
-        data={categoryData}
-        colors={colors}
-        primaryName={categoryData[0]?.name}
-        barAriaLabel="Products grouped by category"
-        donutAriaLabel="Category breakdown"
-      />
+        <DimensionChart
+          title="Category"
+          type="bar"
+          data={categoryData}
+          colors={colors}
+          ariaLabel="Products grouped by category"
+        />
 
-      <DimensionCharts
-        title="Product Family"
-        data={familyData}
-        colors={colors}
-        primaryName={familyData[0]?.name}
-        barAriaLabel="Products grouped by product family"
-        donutAriaLabel="Product family breakdown"
-      />
+        <DimensionChart
+          title="Product Family"
+          type="donut"
+          data={familyData}
+          colors={colors}
+          primaryName={familyData[0]?.name}
+          ariaLabel="Product family breakdown"
+        />
+      </div>
 
       <div className="nu-grid nu-grid--full" style={{ marginTop: 14 }}>
         <ChartFrame
