@@ -13,7 +13,6 @@ import { StandardizationView } from './tabs/StandardizationView.jsx';
 import { ProcessView } from './tabs/ProcessView.jsx';
 import { SocialView } from './tabs/SocialView.jsx';
 import { ProductTrackerView } from './tabs/ProductTrackerView.jsx';
-import { StrategyView } from './tabs/StrategyView.jsx';
 import { AiSenseView } from './tabs/AiSenseView.jsx';
 
 const TABS = [
@@ -22,7 +21,6 @@ const TABS = [
   { id: 'process',     label: 'Process Innovation' },
   { id: 'social',      label: 'Social Media Footprint' },
   { id: 'stdtracker',  label: 'Product Tracker' },
-  { id: 'strategy',    label: 'Strategic Overview' },
   { id: 'aisense',     label: 'CJO AI Sense' },
 ];
 
@@ -134,7 +132,6 @@ export default function NewUI() {
           {activeTab === 'process'  && <ProcessView  key="process"  syncTick={syncTick} search={search} />}
           {activeTab === 'social'      && <SocialView          key="social"      syncTick={syncTick} search={search} />}
           {activeTab === 'stdtracker'  && <ProductTrackerView  key="stdtracker"  syncTick={syncTick} search={search} />}
-          {activeTab === 'strategy'    && <StrategyView        key="strategy"    syncTick={syncTick} search={search} />}
           {activeTab === 'aisense'     && <AiSenseView         key="aisense" />}
         </div>
       </div>

@@ -39,12 +39,6 @@ const ICONS = {
       <line x1="12" y1="22.08" x2="12" y2="12" />
     </svg>
   ),
-  strategy: (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M3 3v18h18" />
-      <path d="M7 14l4-4 4 4 5-5" />
-    </svg>
-  ),
   diagnostics: (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <circle cx="12" cy="12" r="9" />
@@ -62,8 +56,7 @@ const ICONS = {
 const AI_TAB_IDS = ['aisense'];
 const TEAM_TAB_IDS = ['design', 'std', 'process'];
 const MISC_TAB_IDS = ['social', 'stdtracker'];
-const OVERVIEW_TAB_IDS = ['strategy'];
-const DISABLED_TAB_IDS = ['strategy'];
+const DISABLED_TAB_IDS = [];
 
 function CollapseIcon({ collapsed }) {
   return (
@@ -99,7 +92,6 @@ export function Sidebar({
   const aiTabs = AI_TAB_IDS.map((id) => tabById[id]).filter(Boolean);
   const teamTabs = TEAM_TAB_IDS.map((id) => tabById[id]).filter(Boolean);
   const miscTabs = MISC_TAB_IDS.map((id) => tabById[id]).filter(Boolean);
-  const overviewTabs = OVERVIEW_TAB_IDS.map((id) => tabById[id]).filter(Boolean);
 
   const renderItem = (t) => {
     const disabled = DISABLED_TAB_IDS.includes(t.id);
@@ -137,20 +129,6 @@ export function Sidebar({
 
       <nav className="nu-nav" aria-label="Primary">
         <div className="nu-nav__scroll">
-          {aiTabs.length > 0 && (
-            <div className="nu-nav__group">
-              <span className="nu-nav__label">Assistant</span>
-              {aiTabs.map(renderItem)}
-            </div>
-          )}
-
-          {overviewTabs.length > 0 && (
-            <div className="nu-nav__group">
-              <span className="nu-nav__label">Overview</span>
-              {overviewTabs.map(renderItem)}
-            </div>
-          )}
-
           <div className="nu-nav__group">
             <span className="nu-nav__label">Teams</span>
             {teamTabs.map(renderItem)}
@@ -160,6 +138,13 @@ export function Sidebar({
             <div className="nu-nav__group">
               <span className="nu-nav__label">Miscellaneous</span>
               {miscTabs.map(renderItem)}
+            </div>
+          )}
+
+          {aiTabs.length > 0 && (
+            <div className="nu-nav__group">
+              <span className="nu-nav__label">Assistant</span>
+              {aiTabs.map(renderItem)}
             </div>
           )}
 
