@@ -14,6 +14,7 @@ import { ProcessView } from './tabs/ProcessView.jsx';
 import { SocialView } from './tabs/SocialView.jsx';
 import { ProductTrackerView } from './tabs/ProductTrackerView.jsx';
 import { StrategyView } from './tabs/StrategyView.jsx';
+import { AiSenseView } from './tabs/AiSenseView.jsx';
 
 const TABS = [
   { id: 'design',      label: 'Design & Usability' },
@@ -22,6 +23,7 @@ const TABS = [
   { id: 'social',      label: 'Social Media Footprint' },
   { id: 'stdtracker',  label: 'Product Tracker' },
   { id: 'strategy',    label: 'Strategic Overview' },
+  { id: 'aisense',     label: 'CJO AI Sense' },
 ];
 
 export default function NewUI() {
@@ -89,7 +91,7 @@ export default function NewUI() {
   }, [periodFrom, periodTo, ALL_PERIODS]);
 
   const clearPeriod = () => { setPeriodFrom('All'); setPeriodTo('All'); };
-  const showPeriod = activeTab !== 'process' && activeTab !== 'social' && activeTab !== 'stdtracker';
+  const showPeriod = activeTab !== 'process' && activeTab !== 'social' && activeTab !== 'stdtracker' && activeTab !== 'aisense';
 
   const searchPlaceholder = activeTab === 'social'
     ? 'Search applications, categories, platforms...'
@@ -113,17 +115,19 @@ export default function NewUI() {
         />
 
         <div className="nu-main">
-          <TopBar
-            search={search}
-            onSearchChange={setSearch}
-            periodFrom={periodFrom}
-            periodTo={periodTo}
-            periodOptions={ALL_PERIODS}
-            onPeriodChange={(f, t) => { setPeriodFrom(f); setPeriodTo(t); }}
-            onPeriodClear={clearPeriod}
-            showPeriod={showPeriod}
-            searchPlaceholder={searchPlaceholder}
-          />
+          {activeTab !== 'aisense' && (
+            <TopBar
+              search={search}
+              onSearchChange={setSearch}
+              periodFrom={periodFrom}
+              periodTo={periodTo}
+              periodOptions={ALL_PERIODS}
+              onPeriodChange={(f, t) => { setPeriodFrom(f); setPeriodTo(t); }}
+              onPeriodClear={clearPeriod}
+              showPeriod={showPeriod}
+              searchPlaceholder={searchPlaceholder}
+            />
+          )}
 
           {activeTab === 'design'   && <DesignView   key="design"   globalPeriodRange={globalPeriodRange} syncTick={syncTick} search={search} />}
           {activeTab === 'std'      && <StandardizationView key="std" globalPeriodRange={globalPeriodRange} syncTick={syncTick} search={search} />}
@@ -131,6 +135,7 @@ export default function NewUI() {
           {activeTab === 'social'      && <SocialView          key="social"      syncTick={syncTick} search={search} />}
           {activeTab === 'stdtracker'  && <ProductTrackerView  key="stdtracker"  syncTick={syncTick} search={search} />}
           {activeTab === 'strategy'    && <StrategyView        key="strategy"    syncTick={syncTick} search={search} />}
+          {activeTab === 'aisense'     && <AiSenseView         key="aisense" />}
         </div>
       </div>
     </div>

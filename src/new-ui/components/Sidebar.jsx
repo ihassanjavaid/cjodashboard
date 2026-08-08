@@ -51,8 +51,15 @@ const ICONS = {
       <path d="M12 8v4l2 2" />
     </svg>
   ),
+  aisense: (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 3v4M12 17v4M3 12h4M17 12h4" />
+      <path d="M12 8a4 4 0 0 0 4 4 4 4 0 0 0-4 4 4 4 0 0 0-4-4 4 4 0 0 0 4-4z" />
+    </svg>
+  ),
 };
 
+const AI_TAB_IDS = ['aisense'];
 const TEAM_TAB_IDS = ['design', 'std', 'process'];
 const MISC_TAB_IDS = ['social', 'stdtracker'];
 const OVERVIEW_TAB_IDS = ['strategy'];
@@ -89,6 +96,7 @@ export function Sidebar({
   onToggleCollapsed,
 }) {
   const tabById = Object.fromEntries(tabs.map((t) => [t.id, t]));
+  const aiTabs = AI_TAB_IDS.map((id) => tabById[id]).filter(Boolean);
   const teamTabs = TEAM_TAB_IDS.map((id) => tabById[id]).filter(Boolean);
   const miscTabs = MISC_TAB_IDS.map((id) => tabById[id]).filter(Boolean);
   const overviewTabs = OVERVIEW_TAB_IDS.map((id) => tabById[id]).filter(Boolean);
@@ -129,6 +137,13 @@ export function Sidebar({
 
       <nav className="nu-nav" aria-label="Primary">
         <div className="nu-nav__scroll">
+          {aiTabs.length > 0 && (
+            <div className="nu-nav__group">
+              <span className="nu-nav__label">Assistant</span>
+              {aiTabs.map(renderItem)}
+            </div>
+          )}
+
           {overviewTabs.length > 0 && (
             <div className="nu-nav__group">
               <span className="nu-nav__label">Overview</span>
