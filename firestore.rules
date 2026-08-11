@@ -1,0 +1,16 @@
+rules_version = '2';
+
+// Paste this into Firebase Console → Firestore Database → Rules.
+//
+// - Each signed-in user may read ONLY their own role doc (doc ID == their
+//   real login email, exactly as it appears in Authentication → Users).
+// - No client-side writes at all — roles are assigned by hand in the
+//   Firestore console.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /roles/{email} {
+      allow read: if request.auth != null && request.auth.token.email == email;
+      allow write: if false;
+    }
+  }
+}

@@ -1,4 +1,6 @@
 import { useState, useCallback, useEffect } from "react";
+import { onAuthStateChanged, signOut } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
 import { DesignTab } from './tabs/DesignTab.jsx';
 import { JW_LOGO, C } from './shared/dashboardKit.jsx';
 import { StandardizationTab } from './tabs/StandardizationTab.jsx';
@@ -9,6 +11,8 @@ import { SyncButton } from './components/SyncButton.jsx';
 import { Diagnostics } from './pages/Diagnostics.jsx';
 import NewUI from './new-ui/NewUI.jsx';
 import { LoginScreen } from './components/LoginScreen.jsx';
+import { NoRoleScreen } from './components/NoRoleScreen.jsx';
+import { auth, db } from './lib/firebase.js';
 
 
 // ─── MAIN ─────────────────────────────────────────────────────────────────────
@@ -35,38 +39,75 @@ function formatRelative(iso) {
   return `${days} day${days === 1 ? '' : 's'} ago`;
 }
 
-// Derive a token from the password so old sessions (storing '1') are
-// automatically invalidated when the password is first set or changed.
-function authToken() {
-  const pw = import.meta.env.VITE_APP_PASSWORD;
-  if (!pw) return null;
-  return 'v1_' + btoa(pw).slice(0, 14);
-}
-
-function isAuthenticated() {
-  const token = authToken();
-  if (!token) return true; // gate disabled — no password configured
-  return sessionStorage.getItem('cjo_auth') === token;
-}
-
 export function logout() {
-  sessionStorage.removeItem('cjo_auth');
-  window.location.reload();
+  signOut(auth).catch(() => {});
+}
+
+function LoadingScreen() {
+  return (
+    <div style={{ minHeight: '100vh', background: '#F5F2F0', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Poppins,sans-serif', color: '#6B5E58', fontSize: 13 }}>
+      Loading…
+    </div>
+  );
+}
+
+// Auth gate: Firebase handles identity, Firestore (`roles/{email}` docs,
+// managed by hand in the Firebase console) supplies the role. See
+// src/shared/roleConfig.js for what each role can see.
+function useAuthGate() {
+  const [state, setState] = useState({ status: 'loading' });
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        setState({ status: 'signedOut' });
+        return;
+      }
+      try {
+        const snap = await getDoc(doc(db, 'roles', user.email));
+        const role = snap.exists() ? snap.data().role : null;
+        if (role) {
+          setState({ status: 'ready', role, email: user.email });
+        } else {
+          setState({ status: 'noRole', email: user.email });
+        }
+      } catch {
+        setState({ status: 'error' });
+      }
+    });
+    return unsubscribe;
+  }, []);
+
+  return state;
 }
 
 export default function CJODashboard() {
-  const [authed, setAuthed] = useState(() => isAuthenticated());
+  const authState = useAuthGate();
 
-  if (!authed) {
-    return <LoginScreen onSuccess={() => setAuthed(true)} />;
+  if (authState.status === 'loading') return <LoadingScreen />;
+  if (authState.status === 'signedOut') return <LoginScreen />;
+  if (authState.status === 'noRole') return <NoRoleScreen email={authState.email} onLogout={logout} />;
+  if (authState.status === 'error') {
+    return (
+      <div style={{ minHeight: '100vh', background: '#F5F2F0', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', fontFamily: 'Poppins,sans-serif', color: '#6B5E58', gap: 12 }}>
+        <div>Couldn't verify your access. Please try again.</div>
+        <button onClick={logout} style={{ padding: '8px 16px', borderRadius: 8, border: '1.5px solid #DDD5D0', background: '#fff', cursor: 'pointer' }}>Log out</button>
+      </div>
+    );
   }
 
   if (typeof window !== 'undefined' && window.location.pathname === '/diagnostics') {
     return <Diagnostics />;
   }
   if (typeof window !== 'undefined' && window.location.pathname === '/new-ui') {
-    return <NewUI />;
+    return <NewUI role={authState.role} />;
   }
+  return <LegacyDashboard />;
+}
+
+// Legacy (pre-new-ui) tab shell. Kept working but not role-filtered — the
+// live app lives at /new-ui, which the root path redirects to.
+function LegacyDashboard() {
   const [activeTab, setActiveTab] = useState("design");
   const [monthFrom, setMonthFrom] = useState("All");
   const [monthTo,   setMonthTo]   = useState("All");
