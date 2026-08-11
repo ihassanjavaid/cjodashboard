@@ -25,7 +25,7 @@ function friendlyError(code) {
     case 'auth/invalid-email':
       return 'That email address looks invalid.';
     case 'auth/email-already-in-use':
-      return 'An account already exists for that email, try logging in instead.';
+      return 'An account already exists for that email — try logging in instead.';
     case 'auth/weak-password':
       return 'Password should be at least 6 characters.';
     case 'auth/too-many-requests':
@@ -74,11 +74,14 @@ export function LoginScreen() {
       } else {
         await signInWithEmailAndPassword(auth, cleanEmail, password);
       }
+      // On success, stay in the loading state on purpose. App.jsx's
+      // onAuthStateChanged listener will swap this screen out a moment
+      // later — resetting `loading` here would briefly re-enable the
+      // button in between, causing a visible flash.
     } catch (e) {
       setError(friendlyError(e.code));
       setPassword('');
       setConfirmPassword('');
-    } finally {
       setLoading(false);
     }
   };
@@ -274,12 +277,12 @@ export function LoginScreen() {
         <div style={{ textAlign: 'center', marginTop: 18, fontSize: 12.5, color: C.textSub }}>
           {isRegister ? (
             <>
-              Already have an account?{' '}
+              Already Registered?{' '}
               <span
                 onClick={() => switchMode('login')}
                 style={{ color: C.accent, fontWeight: 600, cursor: 'pointer' }}
               >
-                Log in
+                Log In!
               </span>
             </>
           ) : (
