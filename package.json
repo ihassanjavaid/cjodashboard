@@ -17,6 +17,7 @@
     "@vercel/kv": "^3.0.0",
     "d3-scale": "^4.0.2",
     "d3-shape": "^3.2.0",
+    "firebase": "^12.17.1",
     "googleapis": "^171.4.0",
     "papaparse": "^5.5.3",
     "react": "^19.2.5",

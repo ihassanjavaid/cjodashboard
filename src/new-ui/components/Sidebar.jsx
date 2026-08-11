@@ -87,6 +87,7 @@ export function Sidebar({
   onLogout,
   collapsed = false,
   onToggleCollapsed,
+  disabledTabIds = DISABLED_TAB_IDS,
 }) {
   const tabById = Object.fromEntries(tabs.map((t) => [t.id, t]));
   const teamTabs = TEAM_TAB_IDS.map((id) => tabById[id]).filter(Boolean);
@@ -94,7 +95,7 @@ export function Sidebar({
   const overviewTabs = OVERVIEW_TAB_IDS.map((id) => tabById[id]).filter(Boolean);
 
   const renderItem = (t) => {
-    const disabled = DISABLED_TAB_IDS.includes(t.id);
+    const disabled = disabledTabIds.includes(t.id);
     return (
       <button
         key={t.id}
