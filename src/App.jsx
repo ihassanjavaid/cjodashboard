@@ -45,8 +45,64 @@ export function logout() {
 
 function LoadingScreen() {
   return (
-    <div style={{ minHeight: '100vh', background: '#F5F2F0', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Poppins,sans-serif', color: '#6B5E58', fontSize: 13 }}>
-      Loading…
+    <div style={{
+      minHeight: '100vh',
+      background: '#F5F2F0',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      fontFamily: 'Poppins, sans-serif',
+      padding: 24,
+    }}>
+      <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+      <style>{`
+        @keyframes cjo-spin { to { transform: rotate(360deg); } }
+        @keyframes cjo-pulse { 0%, 100% { opacity: 0.55; } 50% { opacity: 1; } }
+      `}</style>
+
+      <div style={{
+        background: '#FFFFFF',
+        border: '1px solid #DDD5D0',
+        borderRadius: 18,
+        padding: '40px 40px 36px',
+        width: '100%',
+        maxWidth: 400,
+        boxShadow: '0 8px 24px rgba(139,26,26,0.16)',
+        position: 'relative',
+        overflow: 'hidden',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+      }}>
+        <div style={{
+          position: 'absolute',
+          top: 0, left: 0, right: 0,
+          height: 4,
+          background: 'linear-gradient(90deg, #8B1A1A, #B22222)',
+          borderRadius: '18px 18px 0 0',
+        }} />
+
+        <img
+          src={JW_LOGO}
+          alt="Jazz World"
+          style={{ width: 52, height: 52, borderRadius: '50%', objectFit: 'cover', marginBottom: 20, boxShadow: '0 4px 12px rgba(139,26,26,0.08)' }}
+        />
+
+        <div style={{
+          width: 28,
+          height: 28,
+          borderRadius: '50%',
+          border: '3px solid #ECE4E1',
+          borderTopColor: '#8B1A1A',
+          animation: 'cjo-spin 0.7s linear infinite',
+          marginBottom: 16,
+        }} />
+
+        <div style={{ fontSize: 13, color: '#6B5E58', animation: 'cjo-pulse 1.6s ease-in-out infinite' }}>
+          Signing you in…
+        </div>
+      </div>
     </div>
   );
 }
