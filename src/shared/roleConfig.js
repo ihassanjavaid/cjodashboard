@@ -28,7 +28,7 @@ export function tabsForRole(role) {
 
 // Each role's own "home" tab — used to pick the default active tab on login.
 export const ROLE_HOME_TAB = {
-  management: 'design',
+  management: 'std',
   design: 'design',
   process: 'process',
   std: 'std',
