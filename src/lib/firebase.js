@@ -5,7 +5,7 @@
 //   VITE_FIREBASE_PROJECT_ID
 //   VITE_FIREBASE_APP_ID
 import { initializeApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
+import { getAuth, setPersistence, browserLocalPersistence } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
@@ -18,3 +18,9 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
+
+// Explicitly persist the session in localStorage so a signed-in user stays
+// signed in across tabs, page reloads, and browser restarts — without this,
+// some browser storage configurations silently fall back to in-memory-only
+// persistence, which is wiped every time a new tab/window opens.
+setPersistence(auth, browserLocalPersistence).catch(() => {});
