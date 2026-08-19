@@ -17,9 +17,22 @@ const TAT_BUCKET_ORDER = [
   'Immediate', '2 Hours', '4 Hours', '6 Hours', '24 Hours',
   '1 Day', '2 Days', '3 Days', '4 Days', '5 Days', '13 Days',
 ];
-const TAT_MONTHS  = ['Jan', 'Feb', 'Mar', 'Apr', 'YTD'];
-const PROD_MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'YTD'];
 const TAT_ALL_TEAMS = 'All';
+
+// The sheet grows a new month column every month. The parser (parseProcessSheet.js)
+// detects the actual month range per block and returns it as `tatMonths` /
+// `productivityMonths` on the parsed data. We use those directly so this view
+// never needs a manual update when a new month is added. If an older cached
+// payload doesn't carry these fields yet, we fall back to deriving the month
+// list from whatever months are actually present in the row data.
+const CALENDAR_MONTH_ORDER = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+function deriveMonthsFromRows(rows) {
+  const present = new Set(rows.map((r) => r.month));
+  const months = CALENDAR_MONTH_ORDER.filter((m) => present.has(m));
+  if (present.has('YTD')) months.push('YTD');
+  return months;
+}
 
 function usePersistentToggle(key, initial) {
   const [value, setValue] = useState(() => {
@@ -52,6 +65,16 @@ export function ProcessView({ syncTick, search }) {
   const tatShown = useMemo(() => tat.filter((r) => rowMatchesSearch(r, ['team', 'bucket', 'month'], query)), [tat, query]);
   const prodShown = useMemo(() => prod.filter((r) => rowMatchesSearch(r, ['teamMember', 'month'], query)), [prod, query]);
 
+  const TAT_MONTHS = useMemo(
+    () => (data?.tatMonths?.length ? data.tatMonths : deriveMonthsFromRows(tat)),
+    [data, tat],
+  );
+  const PROD_MONTHS = useMemo(
+    () => (data?.productivityMonths?.length ? data.productivityMonths : deriveMonthsFromRows(prod)),
+    [data, prod],
+  );
+  const TAT_CHART_MONTHS = useMemo(() => TAT_MONTHS.filter((m) => m !== 'YTD'), [TAT_MONTHS]);
+
   const tatTeams = useMemo(() => [...new Set(tatShown.map((r) => r.team))], [tatShown]);
   const tatTeamOptions = useMemo(
     () => (tatTeams.length ? [TAT_ALL_TEAMS, ...tatTeams] : ['—']),
@@ -72,7 +95,7 @@ export function ProcessView({ syncTick, search }) {
       });
       return { bucket, ...byMonth };
     }).filter((row) => TAT_MONTHS.some((m) => row[m] > 0));
-  }, [tatShown, effectiveTatTeam]);
+  }, [tatShown, effectiveTatTeam, TAT_MONTHS]);
 
   const tatMax = useMemo(() => {
     let m = 0;
@@ -80,7 +103,7 @@ export function ProcessView({ syncTick, search }) {
       for (const month of TAT_MONTHS) if (row[month] > m) m = row[month];
     }
     return m;
-  }, [tatRows]);
+  }, [tatRows, TAT_MONTHS]);
 
   const tatTotals = useMemo(() => {
     const totals = Object.fromEntries(TAT_MONTHS.map((m) => [m, 0]));
@@ -88,13 +111,13 @@ export function ProcessView({ syncTick, search }) {
       for (const month of TAT_MONTHS) totals[month] += row[month] || 0;
     }
     return totals;
-  }, [tatRows]);
+  }, [tatRows, TAT_MONTHS]);
 
-  const tatChartData = useMemo(() => ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug'].map((month) => {
+  const tatChartData = useMemo(() => TAT_CHART_MONTHS.map((month) => {
     const point = { month };
     for (const row of tatRows) point[row.bucket] = row[month];
     return point;
-  }), [tatRows]);
+  }), [tatRows, TAT_CHART_MONTHS]);
 
   const prodMembers = useMemo(() => [...new Set(prodShown.map((r) => r.teamMember))], [prodShown]);
 
@@ -106,7 +129,7 @@ export function ProcessView({ syncTick, search }) {
       row[`${month}_revamp`] = entry?.revamp ?? 0;
     }
     return row;
-  }), [prodShown, prodMembers]);
+  }), [prodShown, prodMembers, PROD_MONTHS]);
 
   const prodMax = useMemo(() => {
     let m = 0;
@@ -117,7 +140,7 @@ export function ProcessView({ syncTick, search }) {
       }
     }
     return m;
-  }, [prodGrid]);
+  }, [prodGrid, PROD_MONTHS]);
 
   const prodChartData = useMemo(() => prodGrid.map((r) => ({
     teamMember: r.teamMember,
