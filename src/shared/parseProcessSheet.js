@@ -20,8 +20,7 @@ const TAT_BUCKETS = new Set([
   '1 Day', '2 Days', '3 Days', '4 Days', '5 Days', '13 Days',
 ]);
 const TAT_MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'YTD'];
-const PRODUCTIVITY_MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'YTD'];
-
+const PRODUCTIVITY_MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'YTD'];
 function num(v) {
   if (v === undefined || v === null || v === '') return 0;
   const n = Number(String(v).replace(/,/g, '').trim());

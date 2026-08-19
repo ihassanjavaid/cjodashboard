@@ -17,7 +17,7 @@ const TAT_BUCKET_ORDER = [
   'Immediate', '2 Hours', '4 Hours', '6 Hours', '24 Hours',
   '1 Day', '2 Days', '3 Days', '4 Days', '5 Days', '13 Days',
 ];
-const TAT_MONTHS  = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'YTD'];
+const TAT_MONTHS  = ['Jan', 'Feb', 'Mar', 'Apr', 'YTD'];
 const PROD_MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'YTD'];
 const TAT_ALL_TEAMS = 'All';
 
