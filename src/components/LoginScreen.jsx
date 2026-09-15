@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
 import { JW_LOGO } from '../shared/dashboardKit.jsx';
 import { auth } from '../lib/firebase.js';
 
@@ -37,45 +37,26 @@ function friendlyError(code) {
   }
 }
 
-function friendlyResetError(code) {
-  switch (code) {
-    case 'auth/invalid-email':
-      return 'That email address looks invalid.';
-    case 'auth/too-many-requests':
-      return 'Too many attempts. Please wait a moment and try again.';
-    case 'auth/network-request-failed':
-      return 'Network error. Check your connection and try again.';
-    default:
-      // Includes auth/user-not-found: intentionally generic so the screen
-      // doesn't reveal whether an account exists for a given email.
-      return 'Something went wrong. Please try again.';
-  }
-}
-
 // Note: there is no onSuccess callback — App.jsx listens to Firebase's
 // onAuthStateChanged and reacts to sign-in/sign-up automatically. A newly
 // registered account has no Firestore role doc yet, so it lands on
 // NoRoleScreen until an admin assigns one.
 export function LoginScreen() {
-  const [mode, setMode] = useState('login'); // 'login' | 'register' | 'reset'
+  const [mode, setMode] = useState('login'); // 'login' | 'register'
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [resetSent, setResetSent] = useState(false);
 
   const isRegister = mode === 'register';
-  const isReset = mode === 'reset';
   const canSubmit = email && password && (!isRegister || confirmPassword) && !loading;
-  const canSubmitReset = email && !loading;
 
   const switchMode = (next) => {
     setMode(next);
     setError('');
     setPassword('');
     setConfirmPassword('');
-    setResetSent(false);
   };
 
   const handleSubmit = async () => {
@@ -105,31 +86,8 @@ export function LoginScreen() {
     }
   };
 
-  const handleResetSubmit = async () => {
-    if (!canSubmitReset) return;
-    setLoading(true);
-    setError('');
-    const cleanEmail = email.trim().toLowerCase();
-    try {
-      await sendPasswordResetEmail(auth, cleanEmail);
-      setResetSent(true);
-    } catch (e) {
-      // Treat "no account for this email" the same as success so the UI
-      // never reveals whether an email is registered.
-      if (e.code === 'auth/user-not-found') {
-        setResetSent(true);
-      } else {
-        setError(friendlyResetError(e.code));
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const handleKeyDown = (e) => {
-    if (e.key !== 'Enter') return;
-    if (isReset) handleResetSubmit();
-    else handleSubmit();
+    if (e.key === 'Enter') handleSubmit();
   };
 
   return (
@@ -177,135 +135,10 @@ export function LoginScreen() {
             CJO Dashboard
           </div>
           <div style={{ fontSize: 12, color: C.textSub, marginTop: 4, textAlign: 'center' }}>
-            {isReset ? 'Reset your password' : isRegister ? 'Create an account' : 'Customer Journey Optimization'}
+            {isRegister ? 'Create an account' : 'Customer Journey Optimization'}
           </div>
         </div>
 
-        {/* Reset-password screen */}
-        {isReset ? (
-          resetSent ? (
-            <div>
-              <div style={{
-                fontSize: 13,
-                color: C.text,
-                background: '#F8F6F5',
-                border: `1px solid ${C.cardBorder}`,
-                borderRadius: 10,
-                padding: '14px 16px',
-                lineHeight: 1.5,
-                marginBottom: 18,
-              }}>
-                If an account exists for <strong>{email.trim().toLowerCase()}</strong>, a password reset link has been sent. Check your inbox (and spam folder).
-              </div>
-              <button
-                onClick={() => switchMode('login')}
-                style={{
-                  width: '100%',
-                  padding: '12px',
-                  borderRadius: 10,
-                  border: 'none',
-                  background: `linear-gradient(135deg, ${C.accent}, ${C.accent2})`,
-                  color: '#fff',
-                  fontSize: 14,
-                  fontWeight: 600,
-                  fontFamily: 'Poppins, sans-serif',
-                  cursor: 'pointer',
-                  letterSpacing: '0.01em',
-                }}
-              >
-                Back to Log In!
-              </button>
-            </div>
-          ) : (
-            <div>
-              <div style={{ fontSize: 12.5, color: C.textSub, marginBottom: 18, lineHeight: 1.5 }}>
-                Enter the email associated with your account and we'll send you a link to reset your password.
-              </div>
-
-              {/* Email field */}
-              <div style={{ marginBottom: 8 }}>
-                <label style={{ display: 'block', fontSize: 11, fontWeight: 600, color: C.textSub, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 8 }}>
-                  Email
-                </label>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={e => { setEmail(e.target.value); setError(''); }}
-                  onKeyDown={handleKeyDown}
-                  placeholder="Enter your email"
-                  autoFocus
-                  autoCapitalize="none"
-                  autoCorrect="off"
-                  spellCheck={false}
-                  style={{
-                    width: '100%',
-                    padding: '11px 14px',
-                    borderRadius: 10,
-                    border: `1.5px solid ${error ? '#B22222' : C.cardBorder}`,
-                    background: error ? '#FFF5F5' : '#F8F6F5',
-                    color: C.text,
-                    fontSize: 14,
-                    fontFamily: 'Poppins, sans-serif',
-                    outline: 'none',
-                    boxSizing: 'border-box',
-                    transition: 'border-color 0.15s',
-                  }}
-                  onFocus={e => { e.target.style.borderColor = C.accent; e.target.style.background = '#fff'; }}
-                  onBlur={e => { e.target.style.borderColor = error ? '#B22222' : C.cardBorder; e.target.style.background = error ? '#FFF5F5' : '#F8F6F5'; }}
-                />
-              </div>
-
-              {/* Error message */}
-              <div style={{
-                fontSize: 12,
-                color: '#B22222',
-                marginBottom: 6,
-                minHeight: 18,
-                opacity: error ? 1 : 0,
-                transition: 'opacity 0.2s',
-              }}>
-                {error}
-              </div>
-
-              <button
-                onClick={handleResetSubmit}
-                disabled={!canSubmitReset}
-                style={{
-                  width: '100%',
-                  padding: '12px',
-                  borderRadius: 10,
-                  border: 'none',
-                  background: !canSubmitReset
-                    ? C.muted
-                    : `linear-gradient(135deg, ${C.accent}, ${C.accent2})`,
-                  color: '#fff',
-                  fontSize: 14,
-                  fontWeight: 600,
-                  fontFamily: 'Poppins, sans-serif',
-                  cursor: !canSubmitReset ? 'not-allowed' : 'pointer',
-                  transition: 'all 0.15s',
-                  letterSpacing: '0.01em',
-                  marginTop: 4,
-                }}
-                onMouseEnter={e => { if (canSubmitReset) e.target.style.opacity = '0.88'; }}
-                onMouseLeave={e => { e.target.style.opacity = '1'; }}
-              >
-                {loading ? 'Sending…' : 'Send Reset Link'}
-              </button>
-
-              <div style={{ textAlign: 'center', marginTop: 18, fontSize: 12.5, color: C.textSub }}>
-                Remembered it?{' '}
-                <span
-                  onClick={() => switchMode('login')}
-                  style={{ color: C.accent, fontWeight: 600, cursor: 'pointer' }}
-                >
-                  Log In!
-                </span>
-              </div>
-            </div>
-          )
-        ) : (
-        <>
         {/* Email field */}
         <div style={{ marginBottom: 14 }}>
           <label style={{ display: 'block', fontSize: 11, fontWeight: 600, color: C.textSub, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 8 }}>
@@ -340,7 +173,7 @@ export function LoginScreen() {
         </div>
 
         {/* Password field */}
-        <div style={{ marginBottom: isRegister ? 14 : 6 }}>
+        <div style={{ marginBottom: isRegister ? 14 : 8 }}>
           <label style={{ display: 'block', fontSize: 11, fontWeight: 600, color: C.textSub, letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 8 }}>
             Password
           </label>
@@ -367,18 +200,6 @@ export function LoginScreen() {
             onBlur={e => { e.target.style.borderColor = error ? '#B22222' : C.cardBorder; e.target.style.background = error ? '#FFF5F5' : '#F8F6F5'; }}
           />
         </div>
-
-        {/* Forgot password — login mode only */}
-        {!isRegister && (
-          <div style={{ textAlign: 'right', marginTop: -6, marginBottom: 4 }}>
-            <span
-              onClick={() => switchMode('reset')}
-              style={{ fontSize: 12, color: C.textSub, cursor: 'pointer', textDecoration: 'underline', textDecorationColor: C.cardBorder }}
-            >
-              Forgot Password?
-            </span>
-          </div>
-        )}
 
         {/* Confirm password field — register mode only */}
         {isRegister && (
@@ -476,8 +297,6 @@ export function LoginScreen() {
             </>
           )}
         </div>
-        </>
-        )}
       </div>
 
       {/* Footer */}
