@@ -213,7 +213,7 @@ export function LoginScreen() {
                   letterSpacing: '0.01em',
                 }}
               >
-                Back to Log In
+                Back to Log In!
               </button>
             </div>
           ) : (
@@ -299,7 +299,7 @@ export function LoginScreen() {
                   onClick={() => switchMode('login')}
                   style={{ color: C.accent, fontWeight: 600, cursor: 'pointer' }}
                 >
-                  Log In
+                  Log In!
                 </span>
               </div>
             </div>
@@ -370,12 +370,12 @@ export function LoginScreen() {
 
         {/* Forgot password — login mode only */}
         {!isRegister && (
-          <div style={{ textAlign: 'right', marginBottom: 14 }}>
+          <div style={{ textAlign: 'right', marginTop: -6, marginBottom: 4 }}>
             <span
               onClick={() => switchMode('reset')}
               style={{ fontSize: 12, color: C.textSub, cursor: 'pointer', textDecoration: 'underline', textDecorationColor: C.cardBorder }}
             >
-              Forgot password?
+              Forgot Password?
             </span>
           </div>
         )}
