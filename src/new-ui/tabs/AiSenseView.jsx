@@ -135,7 +135,7 @@ export function AiSenseView() {
             ref={(el) => { inputRef.current = el; textareaRef.current = el; }}
             rows={1}
             value={input}
-            placeholder="Ask about usability, surveys, VAS projects, social reach…"
+            placeholder="Hi, can you tell me about…"
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={onKeyDown}
           />
