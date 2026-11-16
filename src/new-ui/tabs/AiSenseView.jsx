@@ -88,7 +88,7 @@ export function AiSenseView() {
       <header className="nu-page__head">
         <div className="nu-page__heading">
           <h1>CJO AI Sense</h1>
-          <p>Ask about usability, surveys, VAS products, social reach, or team output — answers come straight from live dashboard data.</p>
+          <p>Unlock real-time intelligence across Design & Usability; Product Optimization & Process Innovation.</p>
         </div>
       </header>
 
@@ -97,8 +97,8 @@ export function AiSenseView() {
           {messages.length === 0 && (
             <div className="nu-chat__empty">
               <div className="nu-chat__empty-icon"><SparkleIcon /></div>
-              <h3>Ask CJO AI Sense anything about the dashboard</h3>
-              <p>It reads live numbers from every tab — design, std, process, social, and product tracker — no guessing.</p>
+              <h3>Ask CJO AI Sense anything!</h3>
+              <p>It reads live numbers in detail, a truly intelligent tracker.</p>
               <div className="nu-chat__suggestions">
                 {SUGGESTIONS.map((s) => (
                   <button key={s} type="button" className="nu-chat__chip" onClick={() => send(s)}>
