@@ -2060,10 +2060,10 @@
 /* Replace/add these exact rules */
 
 .nu-page--chat {
-  min-height: 100vh;
+  min-height: 90vh;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow: auto;
 }
 
 .nu-chat {
