@@ -6,10 +6,10 @@ import { useEffect, useRef, useState } from 'react';
 
 const SUGGESTIONS = [
   'How many usability sessions have been completed?',
-  'Total surveys done in January',
-  'How much did Ali Hamza work on?',
+  'Total surveys done in last month?',
+  'How much processes are under 03 days TAT?',
   "What's Tamasha's LinkedIn following?",
-  'How many total VAS projects do we have?',
+  'How many total hours of UAT do we have?',
 ];
 
 function SparkleIcon() {
