@@ -20,7 +20,8 @@ export function LoginScreen({ onSuccess }) {
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = () => {
-    const expected = import.meta.env.VITE_APP_PASSWORD;
+    // const expected = import.meta.env.VITE_APP_PASSWORD;
+    const expected = '123'; //testing only
 
     // If no password is configured, skip the gate
     if (!expected) {
