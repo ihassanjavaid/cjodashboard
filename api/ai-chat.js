@@ -15,7 +15,8 @@ import { runQuery, describeSource, DATA_SOURCES } from './_lib/aiQuery.js';
 import { SYSTEM_PROMPT } from './_lib/aiPrompt.js';
 
 const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
-const MODEL = process.env.GROQ_MODEL || 'llama-3.3-70b-versatile';
+// const MODEL = process.env.GROQ_MODEL || 'llama-3.3-70b-versatile';
+const MODEL = process.env.GROQ_MODEL || 'openai/gpt-oss-120b';
 const MAX_TOOL_STEPS = 6;
 const HISTORY_LIMIT = 10;
 
