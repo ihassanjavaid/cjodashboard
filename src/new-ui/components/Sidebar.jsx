@@ -39,6 +39,15 @@ const ICONS = {
       <line x1="12" y1="22.08" x2="12" y2="12" />
     </svg>
   ),
+<<<<<<< HEAD
+=======
+  // strategy: (
+  //   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  //     <path d="M3 3v18h18" />
+  //     <path d="M7 14l4-4 4 4 5-5" />
+  //   </svg>
+  // ),
+>>>>>>> origin/main
   diagnostics: (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <circle cx="12" cy="12" r="9" />
@@ -87,6 +96,7 @@ export function Sidebar({
   onLogout,
   collapsed = false,
   onToggleCollapsed,
+  disabledTabIds = DISABLED_TAB_IDS,
 }) {
   const tabById = Object.fromEntries(tabs.map((t) => [t.id, t]));
   const aiTabs = AI_TAB_IDS.map((id) => tabById[id]).filter(Boolean);
@@ -94,7 +104,7 @@ export function Sidebar({
   const miscTabs = MISC_TAB_IDS.map((id) => tabById[id]).filter(Boolean);
 
   const renderItem = (t) => {
-    const disabled = DISABLED_TAB_IDS.includes(t.id);
+    const disabled = disabledTabIds.includes(t.id);
     return (
       <button
         key={t.id}
