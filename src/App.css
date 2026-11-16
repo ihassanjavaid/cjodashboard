@@ -182,3 +182,29 @@
     border-right-color: var(--border);
   }
 }
+
+/* Replace/add these exact rules */
+
+.nu-page--chat {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.nu-chat {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.nu-chat__messages {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.nu-chat__composer {
+  flex-shrink: 0;
+}
