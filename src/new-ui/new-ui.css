@@ -2054,6 +2054,19 @@
 .nu-chat__send:active:not(:disabled) { transform: scale(0.94); }
 .nu-chat__send:disabled { opacity: 0.4; cursor: default; }
 
+.nu-chat__new {
+  display: inline-flex; align-items: center; gap: 8px;
+  height: 38px; padding: 0 16px;
+  border: 0; cursor: pointer; font-family: inherit;
+  border-radius: var(--nu-r-pill);
+  background: var(--nu-accent); color: var(--nu-accent-ink);
+  font-size: 13px; font-weight: 600;
+  transition: background 160ms var(--nu-ease), opacity 160ms var(--nu-ease), transform 120ms var(--nu-ease);
+}
+.nu-chat__new:hover:not(:disabled) { background: var(--nu-accent-2); }
+.nu-chat__new:active:not(:disabled) { transform: scale(0.97); }
+.nu-chat__new:disabled { opacity: 0.4; cursor: default; }
+
 @media (max-width: 1024px) {
   .nu-page--chat { height: calc(100vh - 24px - 76px); min-height: 460px; }
 }

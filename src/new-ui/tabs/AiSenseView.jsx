@@ -3,6 +3,7 @@
 // social, product tracker) via /api/ai-chat.
 
 import { useEffect, useRef, useState } from 'react';
+import { auth } from '../../lib/firebase.js';
 
 const SUGGESTIONS = [
   'How many usability sessions have been completed?',
@@ -30,6 +31,14 @@ function SendIcon() {
   );
 }
 
+function ChatIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 15a2 2 0 0 1-2 2H8l-5 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+    </svg>
+  );
+}
+
 export function AiSenseView() {
   const [messages, setMessages] = useState([]); // { role: 'user' | 'assistant', content }
   const [input, setInput] = useState('');
@@ -37,6 +46,7 @@ export function AiSenseView() {
   const scrollRef = useRef(null);
   const inputRef = useRef(null);
   const textareaRef = useRef(null);
+  const userInitial = (auth.currentUser?.email?.[0] || 'U').toUpperCase();
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' });
@@ -83,12 +93,29 @@ export function AiSenseView() {
     }
   };
 
+  const startNewChat = () => {
+    setMessages([]);
+    setInput('');
+    inputRef.current?.focus();
+  };
+
   return (
     <section className="nu-page nu-page--chat">
       <header className="nu-page__head">
         <div className="nu-page__heading">
           <h1>CJO AI Sense</h1>
           <p>Unlock real-time intelligence across Design & Usability; Product Optimization & Process Innovation.</p>
+        </div>
+                <div className="nu-page__actions">
+          <button
+            type="button"
+            className="nu-chat__new"
+            onClick={startNewChat}
+            disabled={busy || messages.length === 0}
+          >
+            <ChatIcon />
+            New Chat
+          </button>
         </div>
       </header>
 
@@ -112,7 +139,7 @@ export function AiSenseView() {
           {messages.map((m, i) => (
             <div key={i} className={`nu-chat__row nu-chat__row--${m.role}`}>
               <div className="nu-chat__avatar" data-role={m.role} aria-hidden="true">
-                {m.role === 'user' ? 'You' : <SparkleIcon />}
+                {m.role === 'user' ? userInitial : <SparkleIcon />}
               </div>
               <div className={`nu-chat__bubble${m.isError ? ' nu-chat__bubble--error' : ''}`}>
                 {m.content}
