@@ -1,20 +1,19 @@
 // NewUI — Jazz World CJO dashboard, mounted at /new-ui.
 // Layout: left sidebar (logo + nav + sync card) | top bar (search + period + bell + user) + main page.
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import './new-ui.css';
 import { Sidebar } from './components/Sidebar.jsx';
 import { TopBar } from './components/TopBar.jsx';
 import { sortPeriods } from './lib/utils.js';
 import { logout } from '../App.jsx';
-import { tabsForRole, ROLE_HOME_TAB } from '../shared/roleConfig.js';
 
 import { DesignView } from './tabs/DesignView.jsx';
 import { StandardizationView } from './tabs/StandardizationView.jsx';
 import { ProcessView } from './tabs/ProcessView.jsx';
 import { SocialView } from './tabs/SocialView.jsx';
 import { ProductTrackerView } from './tabs/ProductTrackerView.jsx';
-import { StrategyView } from './tabs/StrategyView.jsx';
+import { AiSenseView } from './tabs/AiSenseView.jsx';
 
 const TABS = [
   { id: 'design',      label: 'Design & Usability' },
@@ -22,25 +21,11 @@ const TABS = [
   { id: 'process',     label: 'Process Innovation' },
   { id: 'social',      label: 'Social Media Footprint' },
   { id: 'stdtracker',  label: 'Product Tracker' },
-  { id: 'strategy',    label: 'Strategic Overview' },
+  { id: 'aisense',     label: 'CJO AI Sense' },
 ];
 
-export default function NewUI({ role }) {
-  const allowedTabIds = useMemo(() => tabsForRole(role), [role]);
-  const visibleTabs = useMemo(
-    () => TABS.filter((t) => allowedTabIds.includes(t.id)),
-    [allowedTabIds]
-  );
-  const homeTab = allowedTabIds.includes(ROLE_HOME_TAB[role])
-    ? ROLE_HOME_TAB[role]
-    : (allowedTabIds[0] || 'design');
-
-  const [activeTab, setActiveTabState] = useState(homeTab);
-  // Guard against a role's tab being reached directly (e.g. stale state) —
-  // always fall back to that role's home tab instead of rendering nothing.
-  const setActiveTab = useCallback((id) => {
-    setActiveTabState(allowedTabIds.includes(id) ? id : homeTab);
-  }, [allowedTabIds, homeTab]);
+export default function NewUI() {
+  const [activeTab, setActiveTab] = useState('design');
   // const [periodFrom, setPeriodFrom] = useState('All');
   const [periodFrom, setPeriodFrom] = useState('Jan 26');
   const [periodTo,   setPeriodTo]   = useState('All');
@@ -104,7 +89,7 @@ export default function NewUI({ role }) {
   }, [periodFrom, periodTo, ALL_PERIODS]);
 
   const clearPeriod = () => { setPeriodFrom('All'); setPeriodTo('All'); };
-  const showPeriod = activeTab !== 'process' && activeTab !== 'social' && activeTab !== 'stdtracker';
+  const showPeriod = activeTab !== 'process' && activeTab !== 'social' && activeTab !== 'stdtracker' && activeTab !== 'aisense';
 
   const searchPlaceholder = activeTab === 'social'
     ? 'Search applications, categories, platforms...'
@@ -116,7 +101,7 @@ export default function NewUI({ role }) {
     <div className="nu">
       <div className="nu-shell" data-sidebar-collapsed={sidebarCollapsed}>
         <Sidebar
-          tabs={visibleTabs}
+          tabs={TABS}
           activeTab={activeTab}
           onChangeTab={setActiveTab}
           lastSyncedAt={lastSyncedAt}
@@ -125,33 +110,29 @@ export default function NewUI({ role }) {
           onLogout={logout}
           collapsed={sidebarCollapsed}
           onToggleCollapsed={toggleSidebar}
-          disabledTabIds={role === 'management' ? [] : undefined}
         />
 
         <div className="nu-main">
-          <TopBar
-            search={search}
-            onSearchChange={setSearch}
-            periodFrom={periodFrom}
-            periodTo={periodTo}
-            periodOptions={ALL_PERIODS}
-            onPeriodChange={(f, t) => { setPeriodFrom(f); setPeriodTo(t); }}
-            onPeriodClear={clearPeriod}
-            showPeriod={showPeriod}
-            searchPlaceholder={searchPlaceholder}
-          />
-
-          {!allowedTabIds.includes(activeTab) && (
-            <div style={{ padding: 32, color: '#6B5E58', fontFamily: 'Poppins,sans-serif', fontSize: 13 }}>
-              Your role doesn't have access to any dashboard tab. Contact an admin to check your Firebase role.
-            </div>
+          {activeTab !== 'aisense' && (
+            <TopBar
+              search={search}
+              onSearchChange={setSearch}
+              periodFrom={periodFrom}
+              periodTo={periodTo}
+              periodOptions={ALL_PERIODS}
+              onPeriodChange={(f, t) => { setPeriodFrom(f); setPeriodTo(t); }}
+              onPeriodClear={clearPeriod}
+              showPeriod={showPeriod}
+              searchPlaceholder={searchPlaceholder}
+            />
           )}
-          {activeTab === 'design'   && allowedTabIds.includes('design')   && <DesignView   key="design"   globalPeriodRange={globalPeriodRange} syncTick={syncTick} search={search} />}
-          {activeTab === 'std'      && allowedTabIds.includes('std')      && <StandardizationView key="std" globalPeriodRange={globalPeriodRange} syncTick={syncTick} search={search} />}
-          {activeTab === 'process'  && allowedTabIds.includes('process')  && <ProcessView  key="process"  syncTick={syncTick} search={search} />}
-          {activeTab === 'social'     && allowedTabIds.includes('social')     && <SocialView          key="social"      syncTick={syncTick} search={search} />}
-          {activeTab === 'stdtracker' && allowedTabIds.includes('stdtracker') && <ProductTrackerView  key="stdtracker"  syncTick={syncTick} search={search} />}
-          {activeTab === 'strategy'   && allowedTabIds.includes('strategy')   && <StrategyView        key="strategy"    syncTick={syncTick} search={search} />}
+
+          {activeTab === 'design'   && <DesignView   key="design"   globalPeriodRange={globalPeriodRange} syncTick={syncTick} search={search} />}
+          {activeTab === 'std'      && <StandardizationView key="std" globalPeriodRange={globalPeriodRange} syncTick={syncTick} search={search} />}
+          {activeTab === 'process'  && <ProcessView  key="process"  syncTick={syncTick} search={search} />}
+          {activeTab === 'social'      && <SocialView          key="social"      syncTick={syncTick} search={search} />}
+          {activeTab === 'stdtracker'  && <ProductTrackerView  key="stdtracker"  syncTick={syncTick} search={search} />}
+          {activeTab === 'aisense'     && <AiSenseView         key="aisense" />}
         </div>
       </div>
     </div>
