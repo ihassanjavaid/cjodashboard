@@ -4,15 +4,43 @@
 import { useEffect, useState } from 'react';
 import { AiSenseThread, SparkleIcon } from './AiSenseChat.jsx';
 
+// function BubbleIcon() {
+//   return (
+//     <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+//       <path
+//         d="M5 5.5A2.5 2.5 0 0 1 7.5 3h9A2.5 2.5 0 0 1 19 5.5v7A2.5 2.5 0 0 1 16.5 15H10l-4.2 3.2A.8.8 0 0 1 4.5 17.5V5.5Z"
+//         fill="currentColor"
+//       />
+//       <path d="M12 6.2v1.2M12 12.6v1.2M8.6 10H9.8M14.2 10h1.2" stroke="#8B1A1A" strokeWidth="1.3" strokeLinecap="round" />
+//       <path d="M12 8.1a1.9 1.9 0 0 0 1.9 1.9A1.9 1.9 0 0 0 12 11.9 1.9 1.9 0 0 0 10.1 10 1.9 1.9 0 0 0 12 8.1Z" fill="#8B1A1A" />
+//     </svg>
+//   );
+// }
+
 function BubbleIcon() {
   return (
-    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path
-        d="M5 5.5A2.5 2.5 0 0 1 7.5 3h9A2.5 2.5 0 0 1 19 5.5v7A2.5 2.5 0 0 1 16.5 15H10l-4.2 3.2A.8.8 0 0 1 4.5 17.5V5.5Z"
-        fill="currentColor"
-      />
-      <path d="M12 6.2v1.2M12 12.6v1.2M8.6 10H9.8M14.2 10h1.2" stroke="#8B1A1A" strokeWidth="1.3" strokeLinecap="round" />
-      <path d="M12 8.1a1.9 1.9 0 0 0 1.9 1.9A1.9 1.9 0 0 0 12 11.9 1.9 1.9 0 0 0 10.1 10 1.9 1.9 0 0 0 12 8.1Z" fill="#8B1A1A" />
+    <svg
+      width="34"
+      height="34"
+      viewBox="0 0 24 26"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.7"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      {/* Speech-bubble head with tail at bottom-left */}
+      <path d="M7 7.5h10a2.5 2.5 0 0 1 2.5 2.5v5.9a2.5 2.5 0 0 1-2.5 2.5h-6.8l-3.9 2.9a1.2 1.2 0 0 1-1.8-.9V10A2.5 2.5 0 0 1 7 7.5Z" />
+
+      {/* Antenna */}
+      <path d="M12 7.5V4H8.5" />
+
+      {/* Side ears */}
+      <path d="M2 13h2.5M19.5 13H22" />
+
+      {/* Pill eyes */}
+      <path d="M9.2 12.3v2.2M14.8 12.3v2.2" strokeWidth="2.4" />
     </svg>
   );
 }
