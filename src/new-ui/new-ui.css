@@ -2204,6 +2204,15 @@
   justify-content: center;
 }
 
+.nu-aisense-panel__mark svg {
+  display: block;
+  width: 20px;
+  height: 20px;
+  margin-top: 06px;
+  margin-left: 06px;
+  flex-shrink: 1;
+}
+
 .nu-aisense-panel__actions {
   display: flex;
   align-items: center;
@@ -2264,4 +2273,27 @@
 @media (max-width: 640px) {
   .nu-aisense-dock { right: 14px; bottom: 14px; }
   .nu-aisense-panel { height: min(70vh, 540px); }
+}
+
+.nu-aisense-panel__actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nu-aisense-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #16a34a;
+}
+
+.nu-aisense-live__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 6px rgba(34, 197, 94, 0.5);
 }

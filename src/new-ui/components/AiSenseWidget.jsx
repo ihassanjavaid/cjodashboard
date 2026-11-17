@@ -59,20 +59,34 @@ export function AiSenseWidget({ onOpenFull }) {
         <section className="nu-aisense-panel" role="dialog" aria-label="CJO AI Sense">
           <header className="nu-aisense-panel__head">
             <div className="nu-aisense-panel__title">
-              <span className="nu-aisense-panel__mark" aria-hidden="true"><SparkleIcon size={16} /></span>
+              <span className="nu-aisense-panel__mark" aria-hidden="true"><SparkleIcon size={20} /></span>
               <div>
-                <strong>CJO AI Sense</strong>
-                <span>Ask about live dashboard numbers</span>
+                <strong>How may I help you?</strong>
+                {/* <span>Ask about live dashboard numbersss</span> */}
               </div>
             </div>
-            <div className="nu-aisense-panel__actions">
+            {/* <div className="nu-aisense-panel__actions">
               <button type="button" onClick={openFull} aria-label="Open full CJO AI Sense">
                 <ExpandIcon />
               </button>
               <button type="button" onClick={() => setOpen(false)} aria-label="Close chat">
                 <CloseIcon />
               </button>
-            </div>
+            </div> */}
+            <div className="nu-aisense-panel__actions">
+  <span className="nu-aisense-live" title="AI Sense is live">
+    <span className="nu-aisense-live__dot" />
+    <span>Live</span>
+  </span>
+
+  <button type="button" onClick={openFull} aria-label="Open full CJO AI Sense">
+    <ExpandIcon />
+  </button>
+
+  <button type="button" onClick={() => setOpen(false)} aria-label="Close chat">
+    <CloseIcon />
+  </button>
+</div>
           </header>
           <AiSenseThread compact autoFocus />
         </section>
