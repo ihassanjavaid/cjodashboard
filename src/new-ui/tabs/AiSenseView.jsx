@@ -20,7 +20,7 @@ export function AiSenseView() {
       <header className="nu-page__head">
         <div className="nu-page__heading">
           <h1>CJO AI Sense</h1>
-          <p>Unlock real-time intelligence across Design & Usability; Product Optimization & Process Innovation.</p>
+          <p>Unlock real-time intelligence across Design & Usability, Product Optimization & Process Innovation.</p>
         </div>
         <div className="nu-page__actions">
           <button

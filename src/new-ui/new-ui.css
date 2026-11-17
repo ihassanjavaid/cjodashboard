@@ -1951,16 +1951,71 @@
   font-size: 13px; color: var(--nu-ink-3); margin: 0 0 14px;
 }
 
-.nu-chat__suggestions {
+/* .nu-chat__suggestions {
   display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;
+}
+ */
+
+
+.nu-chat__suggestions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  justify-content: center;
+  width: min(100%, 9200px);
+  margin-inline: auto;
 }
 
 .nu .nu-chat__chip {
+  width: 100%;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--nu-ink-2);
+  background: var(--nu-card);
+  border: 1px solid var(--nu-line);
+  border-radius: var(--nu-r-pill);
+  padding: 10px 14px;
+  text-align: center;
+  white-space: normal;
+  transition: border-color 160ms var(--nu-ease),
+              color 160ms var(--nu-ease),
+              background 160ms var(--nu-ease);
+}
+
+/* Center the fifth chip */
+.nu-chat__chip:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+  justify-self: center;
+  width: auto;
+  max-width: 100%;
+}
+
+/* Single column on smaller screens */
+/* @media (max-width: 600px) {
+  .nu-chat__suggestions {
+    grid-template-columns: 1fr;
+    width: 100%;
+  }
+
+  .nu-chat__chip:last-child:nth-child(odd) {
+    grid-column: auto;
+    width: 100%;
+  }
+} */
+
+/* Hide suggestions on mobile / portrait screens */
+@media (max-width: 600px), (max-aspect-ratio: 1/1) {
+  .nu-chat__suggestions {
+    display: none;
+  }
+}
+
+/* .nu .nu-chat__chip {
   font-size: 12.5px; font-weight: 500; color: var(--nu-ink-2);
   background: var(--nu-card); border: 1px solid var(--nu-line);
   border-radius: var(--nu-r-pill); padding: 8px 14px;
   transition: border-color 160ms var(--nu-ease), color 160ms var(--nu-ease), background 160ms var(--nu-ease);
-}
+} */
 .nu .nu-chat__chip:hover {
   border-color: var(--nu-accent-line); color: var(--nu-accent); background: var(--nu-accent-soft);
 }

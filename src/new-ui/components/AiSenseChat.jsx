@@ -10,7 +10,8 @@ const SUGGESTIONS = [
   'Total surveys done in last month?',
   'How much processes are under 03 days TAT?',
   "What's Tamasha's LinkedIn following?",
-  'How many total hours of UAT do we have?',
+  'How many total UATs do we have for JLV?',
+  'How many UAT manned hours do we have for Simosa?'
 ];
 
 export function SparkleIcon({ size = 20 }) {
