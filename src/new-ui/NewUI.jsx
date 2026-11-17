@@ -16,6 +16,8 @@ import { SocialView } from './tabs/SocialView.jsx';
 import { ProductTrackerView } from './tabs/ProductTrackerView.jsx';
 import { StrategyView } from './tabs/StrategyView.jsx';
 import { AiSenseView } from './tabs/AiSenseView.jsx';
+import { AiSenseChatProvider } from './components/AiSenseChat.jsx';
+import { AiSenseWidget } from './components/AiSenseWidget.jsx';
 
 const TABS = [
   { id: 'design',      label: 'Design & Usability' },
@@ -114,7 +116,10 @@ export default function NewUI({ role }) {
       ? 'Search products, types, categories, families...'
       : 'Search projects, tasks, resources...';
 
+  const showAiWidget = allowedTabIds.includes('aisense') && activeTab !== 'aisense';
+
   return (
+    <AiSenseChatProvider>
     <div className="nu">
       <div className="nu-shell" data-sidebar-collapsed={sidebarCollapsed}>
         <Sidebar
@@ -158,6 +163,8 @@ export default function NewUI({ role }) {
           {activeTab === 'aisense'    && allowedTabIds.includes('aisense')    && <AiSenseView         key="aisense" />}
         </div>
       </div>
+      {showAiWidget && <AiSenseWidget onOpenFull={() => setActiveTab('aisense')} />}
     </div>
+    </AiSenseChatProvider>
     );
 }
