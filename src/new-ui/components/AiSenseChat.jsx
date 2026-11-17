@@ -13,6 +13,8 @@ const SUGGESTIONS = [
   'How many total UATs do we have for JLV?',
   'How many UAT manned hours do we have for Simosa?'
 ];
+// const suggestions = compact ? SUGGESTIONS.slice(0, 3) : SUGGESTIONS;
+// const suggestions2 = compact ? SUGGESTIONS.slice(0, 3) : SUGGESTIONS;
 
 export function SparkleIcon({ size = 20 }) {
   return (
@@ -133,13 +135,27 @@ export function AiSenseThread({ compact = false, autoFocus = false }) {
             <p>{compact
               ? 'Ask about live numbers across the dashboard.'
               : 'It reads live numbers in detail, a truly intelligent tracker.'}</p>
-            <div className="nu-chat__suggestions">
+            {/* <div className="nu-chat__suggestions">
               {suggestions.map((s) => (
                 <button key={s} type="button" className="nu-chat__chip" onClick={() => send(s)}>
                   {s}
                 </button>
               ))}
-            </div>
+            </div> */}
+            {!compact && (
+  <div className="nu-chat__suggestions">
+    {SUGGESTIONS.map((s) => (
+      <button
+        key={s}
+        type="button"
+        className="nu-chat__chip"
+        onClick={() => send(s)}
+      >
+        {s}
+      </button>
+    ))}
+  </div>
+)}
           </div>
         )}
 

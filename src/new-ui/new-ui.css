@@ -2004,9 +2004,17 @@
 } */
 
 /* Hide suggestions on mobile / portrait screens */
-@media (max-width: 600px), (max-aspect-ratio: 1/1) {
+/* @media (max-width: 600px), (max-aspect-ratio: 1/1) {
   .nu-chat__suggestions {
     display: none;
+  }
+} */
+
+/* Hide AI suggestions on mobile and portrait screens */
+@media screen and (max-width: 768px),
+       screen and (orientation: portrait) {
+  .nu-chat .nu-chat__suggestions {
+    display: none !important;
   }
 }
 
