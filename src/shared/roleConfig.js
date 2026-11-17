@@ -16,10 +16,10 @@ export const ROLES = {
 // Management sees everything, incl. tabs still marked "Coming soon".
 // Every other role sees its own tab plus the shared/misc tabs.
 export const ROLE_TABS = {
-  management: ['design', 'std', 'process', 'social', 'stdtracker'], 
-  design: ['design', 'social', 'stdtracker'],
-  process: ['process', 'social', 'stdtracker'],
-  std: ['std', 'social', 'stdtracker'],
+  management: ['design', 'std', 'process', 'social', 'stdtracker', 'aisense'], 
+  design: ['design', 'social', 'stdtracker', 'aisense'],
+  process: ['process', 'social', 'stdtracker', 'aisense'],
+  std: ['std', 'social', 'stdtracker', 'aisense'],
 };
 
 export function tabsForRole(role) {

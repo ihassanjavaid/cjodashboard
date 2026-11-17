@@ -15,6 +15,9 @@ import { ProcessView } from './tabs/ProcessView.jsx';
 import { SocialView } from './tabs/SocialView.jsx';
 import { ProductTrackerView } from './tabs/ProductTrackerView.jsx';
 import { StrategyView } from './tabs/StrategyView.jsx';
+import { AiSenseView } from './tabs/AiSenseView.jsx';
+import { AiSenseChatProvider } from './components/AiSenseChat.jsx';
+import { AiSenseWidget } from './components/AiSenseWidget.jsx';
 
 const TABS = [
   { id: 'design',      label: 'Design & Usability' },
@@ -23,6 +26,7 @@ const TABS = [
   { id: 'social',      label: 'Social Media Footprint' },
   { id: 'stdtracker',  label: 'Product Tracker' },
   { id: 'strategy',    label: 'Strategic Overview' },
+  { id: 'aisense',     label: 'CJO AI Sense' },
 ];
 
 export default function NewUI({ role }) {
@@ -104,7 +108,7 @@ export default function NewUI({ role }) {
   }, [periodFrom, periodTo, ALL_PERIODS]);
 
   const clearPeriod = () => { setPeriodFrom('All'); setPeriodTo('All'); };
-  const showPeriod = activeTab !== 'process' && activeTab !== 'social' && activeTab !== 'stdtracker';
+  const showPeriod = activeTab !== 'process' && activeTab !== 'social' && activeTab !== 'stdtracker' && activeTab !== 'aisense';
 
   const searchPlaceholder = activeTab === 'social'
     ? 'Search applications, categories, platforms...'
@@ -112,7 +116,10 @@ export default function NewUI({ role }) {
       ? 'Search products, types, categories, families...'
       : 'Search projects, tasks, resources...';
 
+  const showAiWidget = allowedTabIds.includes('aisense') && activeTab !== 'aisense';
+
   return (
+    <AiSenseChatProvider>
     <div className="nu">
       <div className="nu-shell" data-sidebar-collapsed={sidebarCollapsed}>
         <Sidebar
@@ -127,19 +134,20 @@ export default function NewUI({ role }) {
           onToggleCollapsed={toggleSidebar}
           disabledTabIds={role === 'management' ? [] : undefined}
         />
-
         <div className="nu-main">
-          <TopBar
-            search={search}
-            onSearchChange={setSearch}
-            periodFrom={periodFrom}
-            periodTo={periodTo}
-            periodOptions={ALL_PERIODS}
-            onPeriodChange={(f, t) => { setPeriodFrom(f); setPeriodTo(t); }}
-            onPeriodClear={clearPeriod}
-            showPeriod={showPeriod}
-            searchPlaceholder={searchPlaceholder}
-          />
+        {activeTab !== 'aisense' && (
+            <TopBar
+              search={search}
+              onSearchChange={setSearch}
+              periodFrom={periodFrom}
+              periodTo={periodTo}
+              periodOptions={ALL_PERIODS}
+              onPeriodChange={(f, t) => { setPeriodFrom(f); setPeriodTo(t); }}
+              onPeriodClear={clearPeriod}
+              showPeriod={showPeriod}
+              searchPlaceholder={searchPlaceholder}
+            />
+          )}
 
           {!allowedTabIds.includes(activeTab) && (
             <div style={{ padding: 32, color: '#6B5E58', fontFamily: 'Poppins,sans-serif', fontSize: 13 }}>
@@ -152,8 +160,11 @@ export default function NewUI({ role }) {
           {activeTab === 'social'     && allowedTabIds.includes('social')     && <SocialView          key="social"      syncTick={syncTick} search={search} />}
           {activeTab === 'stdtracker' && allowedTabIds.includes('stdtracker') && <ProductTrackerView  key="stdtracker"  syncTick={syncTick} search={search} />}
           {activeTab === 'strategy'   && allowedTabIds.includes('strategy')   && <StrategyView        key="strategy"    syncTick={syncTick} search={search} />}
+          {activeTab === 'aisense'    && allowedTabIds.includes('aisense')    && <AiSenseView         key="aisense" />}
         </div>
       </div>
+      {showAiWidget && <AiSenseWidget onOpenFull={() => setActiveTab('aisense')} />}
     </div>
-  );
+    </AiSenseChatProvider>
+    );
 }

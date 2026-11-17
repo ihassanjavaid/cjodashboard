@@ -10,6 +10,9 @@ import { SocialTab } from './tabs/SocialTab.jsx';
 import { SyncButton } from './components/SyncButton.jsx';
 import { Diagnostics } from './pages/Diagnostics.jsx';
 import NewUI from './new-ui/NewUI.jsx';
+import { AiSenseChatProvider } from './new-ui/components/AiSenseChat.jsx';
+import { AiSenseWidget } from './new-ui/components/AiSenseWidget.jsx';
+import './new-ui/new-ui.css';
 import { LoginScreen } from './components/LoginScreen.jsx';
 import { NoRoleScreen } from './components/NoRoleScreen.jsx';
 import { auth, db } from './lib/firebase.js';
@@ -139,6 +142,16 @@ function useAuthGate() {
 
 export default function CJODashboard() {
   const authState = useAuthGate();
+
+  if (import.meta.env.DEV && typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('preview-aisense')) {
+    return (
+      <div className="nu" style={{ minHeight: '100vh', background: '#F5F2F0' }}>
+        <AiSenseChatProvider>
+          <AiSenseWidget onOpenFull={() => {}} />
+        </AiSenseChatProvider>
+      </div>
+    );
+  }
 
   if (authState.status === 'loading') return <LoadingScreen />;
   if (authState.status === 'signedOut') return <LoginScreen />;

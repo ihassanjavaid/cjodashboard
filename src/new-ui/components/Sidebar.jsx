@@ -51,12 +51,20 @@ const ICONS = {
       <path d="M12 8v4l2 2" />
     </svg>
   ),
+  aisense: (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 3v4M12 17v4M3 12h4M17 12h4" />
+      <path d="M12 8a4 4 0 0 0 4 4 4 4 0 0 0-4 4 4 4 0 0 0-4-4 4 4 0 0 0 4-4z" />
+    </svg>
+  ),
 };
 
 const TEAM_TAB_IDS = ['design', 'std', 'process'];
 const MISC_TAB_IDS = ['social', 'stdtracker'];
+const AI_TAB_IDS = ['aisense'];
 const OVERVIEW_TAB_IDS = ['strategy'];
 const DISABLED_TAB_IDS = ['strategy'];
+
 
 function CollapseIcon({ collapsed }) {
   return (
@@ -92,7 +100,9 @@ export function Sidebar({
   const tabById = Object.fromEntries(tabs.map((t) => [t.id, t]));
   const teamTabs = TEAM_TAB_IDS.map((id) => tabById[id]).filter(Boolean);
   const miscTabs = MISC_TAB_IDS.map((id) => tabById[id]).filter(Boolean);
+  const aiTabs = AI_TAB_IDS.map((id) => tabById[id]).filter(Boolean);
   const overviewTabs = OVERVIEW_TAB_IDS.map((id) => tabById[id]).filter(Boolean);
+  
 
   const renderItem = (t) => {
     const disabled = disabledTabIds.includes(t.id);
@@ -149,6 +159,13 @@ export function Sidebar({
             </div>
           )}
 
+          {aiTabs.length > 0 && (
+            <div className="nu-nav__group">
+              <span className="nu-nav__label">Assistant</span>
+              {aiTabs.map(renderItem)}
+            </div>
+          )}
+          
           {/* <div className="nu-nav__group">
             <span className="nu-nav__label">General</span>
             <span
